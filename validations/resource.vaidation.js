@@ -11,10 +11,6 @@ module.exports = payload => {
     return new ValidationError('Please enter a valid URL');
   }
 
-  if (!payload.meta || typeof payload.meta !== 'object') {
-    return new ValidationError('Please enter a valid meta object');
-  }
-
   if (!payload.author || typeof payload.author !== 'object') {
     return new ValidationError('Please enter a valid author object');
   }
