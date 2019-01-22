@@ -60,10 +60,7 @@ client.login(config.token);
 //
 // dbHandler.create(
 //   {
-//     link: 'http://www.google.com',
-//     meta: {
-//       title: 'test'
-//     },
+//     link: 'http://www.youtube.com',
 //     author: {
 //       id: 'test',
 //       username: 'test',
