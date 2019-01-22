@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose;
-
-const ResourceSchema = new Schema({
+const ResourceSchema = new mongoose.Schema({
   meta: {
     title: String,
     image: String,
@@ -11,7 +9,7 @@ const ResourceSchema = new Schema({
   link: {
     type: String,
     trim: true,
-    required: 'Link in required',
+    required: 'Link is required',
     unique: 'Link exists already'
   },
   author: {
