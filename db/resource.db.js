@@ -53,4 +53,30 @@ resourceHandler.create = ({ link, author }) => {
   });
 };
 
+resourceHandler.read = ({ pageNumber, limit }) => {
+  return new Promise((resolve, reject) => {
+    let response = {
+      error: true,
+      message: ''
+    };
+    Resource.find({})
+      .sort({ createdAt: -1 })
+      .skip((pageNumber - 1) * limit)
+      .limit(limit)
+      .exec((error, resources) => {
+        if (error) {
+          response.message = 'Something went wrong. Please try again later.';
+          reject(response);
+        }
+        response.message = 'Successfully retrieved the resources list';
+        response.payload = {
+          start: pageNumber * limit - limit + 1,
+          end: pageNumber * limit,
+          resources
+        };
+        resolve(response);
+      });
+  });
+};
+
 module.exports = resourceHandler;
