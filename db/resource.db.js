@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
+const urlMetadata = require('url-metadata');
 const config = require('../config.json');
 const Resource = require('../models/resource.model');
 const validator = require('../validations/resource.vaidation');
 const ValidationError = require('../validations/ValidationError');
-const urlMetadata = require('url-metadata');
+const utils = require('../utils');
 
 mongoose.Promise = Promise;
 mongoose.connect(
@@ -26,7 +27,7 @@ resourceHandler.create = ({ link, author }, callback) => {
     urlMetadata(link).then(metadata => {
       const meta = {
         title: metadata.title,
-        image: metadata.image,
+        image: utils.normalizeUrl(metadata.image, utils.getDomain(link)),
         description: metadata.description
       };
       const resource = new Resource({
