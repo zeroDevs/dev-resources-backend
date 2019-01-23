@@ -58,16 +58,14 @@ client.login(config.token);
 
 // DB Test Case
 //
-// dbHandler.create(
-//   {
-//     link: 'http://www.youtube.com',
+// dbHandler
+//   .create({
+//     link: 'https://www.youtube.com/',
 //     author: {
 //       id: 'test',
 //       username: 'test',
 //       discriminator: 'test'
 //     }
-//   },
-//   payload => {
-//     console.log(payload);
-//   }
-// );
+//   })
+//   .then(response => console.log(response))
+//   .catch(error => console.log(error));
