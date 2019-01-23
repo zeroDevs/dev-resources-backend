@@ -26,6 +26,10 @@ const ResourceSchema = new mongoose.Schema({
       required: 'Discriminator is required'
     },
     avatar: String
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 });
 
