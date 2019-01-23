@@ -3,6 +3,8 @@ const urlMetadata = require('url-metadata');
 const config = require('../config.json');
 const Resource = require('../models/resource.model');
 const validator = require('../validations/resource.vaidation');
+const authorValidator = require('../validations/author.validation');
+const linkValidator = require('../validations/link.valdation');
 const utils = require('../utils');
 
 mongoose.Promise = Promise;
@@ -15,7 +17,7 @@ const resourceHandler = {};
 
 resourceHandler.create = ({ link, author }) => {
   return new Promise((resolve, reject) => {
-    let payload = {
+    let response = {
       error: true,
       message: ''
     };
@@ -34,21 +36,20 @@ resourceHandler.create = ({ link, author }) => {
           });
           resource.save(error => {
             if (error) {
-              payload.message =
+              response.message =
                 'There is a problem adding into the database. Please try agian later';
-              reject(payload);
+              reject(response);
             } else {
-              payload.error = false;
-              payload.message = 'Successfully added into the database';
-              resolve(payload);
+              response.error = false;
+              response.message = 'Successfully added into the database';
+              resolve(response);
             }
           });
         });
       })
       .catch(error => {
-        console.log(error.message);
-        payload.message = error.message;
-        reject(payload);
+        response.message = error.message;
+        reject(response);
       });
   });
 };
@@ -103,16 +104,23 @@ resourceHandler.updateLink = ({ oldLink, newLink }) => {
       error: true,
       message: 'Something went wrong. Please try again later'
     };
-    Resource.findOneAndUpdate(
-      { link: oldLink },
-      { $set: { link: newLink } },
-      error => {
-        if (error) reject(response);
-        response.error = false;
-        response.message = 'Successfully updated the link';
-        resolve(response);
-      }
-    );
+    linkValidator(newLink)
+      .then(() => {
+        Resource.findOneAndUpdate(
+          { link: oldLink },
+          { $set: { link: newLink } },
+          error => {
+            if (error) reject(response);
+            response.error = false;
+            response.message = 'Successfully updated the link';
+            resolve(response);
+          }
+        );
+      })
+      .catch(error => {
+        response.message = error.message;
+        reject(response);
+      });
   });
 };
 
@@ -122,12 +130,23 @@ resourceHandler.updateAuthor = ({ link, author }) => {
       error: true,
       message: 'Something went wrong. Please try again later'
     };
-    Resource.findOneAndUpdate({ link }, { $set: { author: author } }, error => {
-      if (error) reject(response);
-      response.error = false;
-      response.message = 'Successfully updated the author';
-      resolve(response);
-    });
+    authorValidator(author)
+      .then(() => {
+        Resource.findOneAndUpdate(
+          { link },
+          { $set: { author: author } },
+          error => {
+            if (error) reject(response);
+            response.error = false;
+            response.message = 'Successfully updated the author';
+            resolve(response);
+          }
+        );
+      })
+      .catch(error => {
+        response.message = error.message;
+        reject(response);
+      });
   });
 };
 
