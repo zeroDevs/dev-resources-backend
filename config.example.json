@@ -1,0 +1,5 @@
+{
+  "token": "",
+  "prefix": "+res",
+  "mongourl": "url string to connect to the database"
+}
