@@ -101,6 +101,27 @@ resourceHandler.readAll = () => {
   });
 };
 
+resourceHandler.updateLink = ({ oldLink, newLink }) => {
+  return new Promise((resolve, reject) => {
+    let response = {
+      error: true,
+      message: 'Something went wrong. Please try again later'
+    };
+    Resource.findOneAndUpdate(
+      { link: oldLink },
+      { $set: { link: newLink } },
+      error => {
+        if (error) {
+          reject(response);
+        }
+        response.error = false;
+        response.message = 'Successfully updated the link';
+        resolve(response);
+      }
+    );
+  });
+};
+
 resourceHandler.delete = link => {
   return new Promise((resolve, reject) => {
     let response = {
