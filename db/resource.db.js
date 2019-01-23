@@ -64,9 +64,7 @@ resourceHandler.read = ({ pageNumber, limit }) => {
       .skip((pageNumber - 1) * limit)
       .limit(limit)
       .exec((error, resources) => {
-        if (error) {
-          reject(response);
-        }
+        if (error) reject(response);
         response.error = false;
         response.message = 'Successfully retrieved the resources collection';
         response.payload = {
@@ -88,9 +86,7 @@ resourceHandler.readAll = () => {
     Resource.find({})
       .sort({ createdAt: -1 })
       .exec((error, resources) => {
-        if (error) {
-          reject(response);
-        }
+        if (error) reject(response);
         response.error = false;
         response.message = 'Successfully retrieved the resources collection';
         response.payload = {
@@ -111,14 +107,27 @@ resourceHandler.updateLink = ({ oldLink, newLink }) => {
       { link: oldLink },
       { $set: { link: newLink } },
       error => {
-        if (error) {
-          reject(response);
-        }
+        if (error) reject(response);
         response.error = false;
         response.message = 'Successfully updated the link';
         resolve(response);
       }
     );
+  });
+};
+
+resourceHandler.updateAuthor = ({ link, author }) => {
+  return new Promise((resolve, reject) => {
+    let response = {
+      error: true,
+      message: 'Something went wrong. Please try again later'
+    };
+    Resource.findOneAndUpdate({ link }, { $set: { author: author } }, error => {
+      if (error) reject(response);
+      response.error = false;
+      response.message = 'Successfully updated the author';
+      resolve(response);
+    });
   });
 };
 
@@ -129,9 +138,7 @@ resourceHandler.delete = link => {
       message: 'Something went wrong. Please try again later'
     };
     Resource.deleteOne({ link }, error => {
-      if (error) {
-        reject(response);
-      }
+      if (error) reject(response);
       response.error = false;
       response.message = 'Successfully deleted the link';
       resolve(response);
