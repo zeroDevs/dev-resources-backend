@@ -57,7 +57,7 @@ resourceHandler.read = ({ pageNumber, limit }) => {
   return new Promise((resolve, reject) => {
     let response = {
       error: true,
-      message: ''
+      message: 'Something went wrong. Please try again later'
     };
     Resource.find({})
       .sort({ createdAt: -1 })
@@ -65,9 +65,9 @@ resourceHandler.read = ({ pageNumber, limit }) => {
       .limit(limit)
       .exec((error, resources) => {
         if (error) {
-          response.message = 'Something went wrong. Please try again later.';
           reject(response);
         }
+        response.error = false;
         response.message = 'Successfully retrieved the resources collection';
         response.payload = {
           start: pageNumber * limit - limit + 1,
@@ -83,21 +83,38 @@ resourceHandler.readAll = () => {
   return new Promise((resolve, reject) => {
     let response = {
       error: true,
-      message: ''
+      message: 'Something went wrong. Please try again later'
     };
     Resource.find({})
       .sort({ createdAt: -1 })
       .exec((error, resources) => {
         if (error) {
-          response.message = 'Something went wrong. Please try again later.';
           reject(response);
         }
+        response.error = false;
         response.message = 'Successfully retrieved the resources collection';
         response.payload = {
-          resource
+          resources
         };
         resolve(response);
       });
+  });
+};
+
+resourceHandler.delete = link => {
+  return new Promise((resolve, reject) => {
+    let response = {
+      error: true,
+      message: 'Something went wrong. Please try again later'
+    };
+    Resource.deleteOne({ link }, error => {
+      if (error) {
+        reject(response);
+      }
+      response.error = false;
+      response.message = 'Successfully deleted the link';
+      resolve(response);
+    });
   });
 };
 
