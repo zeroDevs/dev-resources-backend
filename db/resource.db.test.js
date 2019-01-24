@@ -42,6 +42,36 @@ describe('resourceHandler - create()', () => {
   });
 });
 
+describe('resourceHandler - read()', () => {
+  it('should return resources provided in inputs', done => {
+    done();
+  });
+});
+
+describe('resourceHandler - readAll()', () => {
+  it('should return all resources', done => {
+    done();
+  });
+});
+
+describe('resourceHandler - updateLink()', () => {
+  it('should update an existing link on valid input', done => {
+    done();
+  });
+});
+
+describe('resourceHandler - updateAuthor()', () => {
+  it('should update the author of an existing link on valid input', done => {
+    done();
+  });
+});
+
+describe('resourceHandler - delete()', () => {
+  it('should delete an existing resource on valid link', done => {
+    done();
+  });
+});
+
 afterEach(done => {
   Resource.deleteMany({}, () => {
     done();
