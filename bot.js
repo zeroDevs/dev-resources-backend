@@ -6,7 +6,7 @@ const client = new Discord.Client();
 // Here we load the config.json file that contains our token and our prefix values.
 // config.token contains the bot's token
 // config.prefix contains the message prefix.
-const config = require('./config.json');
+const config = require('./configs/general.configs');
 const dbHandler = require('./db/resource.db');
 
 // This event will run if the bot starts, and logs in, successfully.
@@ -30,7 +30,7 @@ client.on('ready', async () => {
   //Connect to the database
   mongoose.set('useCreateIndex', true);
   mongoose.connect(
-    config.mongourl,
+    config.mongoUrl,
     { useNewUrlParser: true }
   );
 
@@ -71,7 +71,7 @@ client.on('message', async message => {
   }
 });
 
-client.login(config.token);
+client.login((config.botToken));
 
 // DB Test Case
 //
