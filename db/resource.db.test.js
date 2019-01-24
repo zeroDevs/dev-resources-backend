@@ -98,14 +98,42 @@ describe('resourceHandler - readAll()', () => {
 
 describe('resourceHandler - updateLink()', () => {
   it('should update an existing link on valid input', done => {
-    done();
-  });
+    resourceHandler.create(resourceSeed[0]).then(() => {
+      resourceHandler
+        .updateLink({
+          oldLink: resourceSeed[0].link,
+          newLink: resourceSeed[1].link
+        })
+        .then(() => {
+          Resource.find({ link: resourceSeed[1].link }).exec(
+            (error, resources) => {
+              assert.equal(resources.length, 1);
+              done();
+            }
+          );
+        });
+    });
+  }).timeout(5000);
 });
 
 describe('resourceHandler - updateAuthor()', () => {
   it('should update the author of an existing link on valid input', done => {
-    done();
-  });
+    resourceHandler.create(resourceSeed[0]).then(() => {
+      resourceHandler
+        .updateAuthor({
+          link: resourceSeed[0].link,
+          author: resourceSeed[1].author
+        })
+        .then(() => {
+          Resource.find({ author: resourceSeed[1].author }).exec(
+            (error, resources) => {
+              assert.equal(resources.length, 1);
+              done();
+            }
+          );
+        });
+    });
+  }).timeout(5000);
 });
 
 describe('resourceHandler - delete()', () => {
