@@ -110,8 +110,17 @@ describe('resourceHandler - updateAuthor()', () => {
 
 describe('resourceHandler - delete()', () => {
   it('should delete an existing resource on valid link', done => {
-    done();
-  });
+    resourceHandler.create(resourceSeed[0]).then(() => {
+      resourceHandler.delete(resourceSeed[0].link).then(() => {
+        Resource.find({ link: resourceSeed[0].link }).exec(
+          (error, resources) => {
+            assert.equal(resources.length, 0);
+            done();
+          }
+        );
+      });
+    });
+  }).timeout(5000);
 });
 
 afterEach(done => {
