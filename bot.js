@@ -10,7 +10,7 @@ const config = require('./config.json');
 const dbHandler = require('./db/resource.db');
 
 // This event will run if the bot starts, and logs in, successfully.
-client.on('ready', () => {
+client.on('ready', async () => {
   console.log(
     `Bot has started, with ${client.users.size} users, in ${
       client.channels.size
@@ -19,12 +19,21 @@ client.on('ready', () => {
   // This sets the bots activity message
   client.user.setActivity(`Serving ${client.guilds.size} servers`);
 
+  // This will console log the bots invite code
+  try {
+    let link = await client.generateInvite(["ADMINISTRATOR"]);
+    console.log("Bot Invite: " + link);
+  } catch (e) {
+    console.log(e.stack)
+  }
+
   //Connect to the database
   mongoose.set('useCreateIndex', true);
   mongoose.connect(
     config.mongourl,
     { useNewUrlParser: true }
   );
+
 });
 
 // This event will run on every single message received, from any channel or DM.
