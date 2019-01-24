@@ -39,8 +39,17 @@ describe('resourceHandler - create()', () => {
 
 describe('resourceHandler - read()', () => {
   it('should return resources provided in inputs', done => {
-    done();
-  });
+    Promise.all(
+      resourceSeed.splice(0, 5).map(seed => {
+        return resourceHandler.create(seed);
+      })
+    ).then(() => {
+      resourceHandler.read({ pageNumber: 2, limit: 2 }).then(response => {
+        assert.equal(response.payload.resources.length, 2);
+        done();
+      });
+    });
+  }).timeout(10000);
 });
 
 describe('resourceHandler - readAll()', () => {
