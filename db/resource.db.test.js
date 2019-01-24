@@ -2,14 +2,14 @@ const mongoose = require('mongoose');
 const assert = require('assert');
 const Resource = require('../models/resource.model');
 const resourceHandler = require('./resource.db');
-const config = require('../config');
+const config = require('../configs/general.configs');
 const resourceSeed = require('../seeds/resources.seed');
 
 before(done => {
   mongoose.set('useCreateIndex', true);
   mongoose
     .connect(
-      config.mongotesturl,
+      config.mongoUrl,
       { useNewUrlParser: true }
     )
     .then(() => {
