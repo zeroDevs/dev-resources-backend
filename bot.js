@@ -1,5 +1,6 @@
 // Load up the discord.js library
 const Discord = require('discord.js');
+const mongoose = require('mongoose');
 const client = new Discord.Client();
 
 // Here we load the config.json file that contains our token and our prefix values.
@@ -17,6 +18,13 @@ client.on('ready', () => {
   );
   // This sets the bots activity message
   client.user.setActivity(`Serving ${client.guilds.size} servers`);
+
+  //Connect to the database
+  mongoose.set('useCreateIndex', true);
+  mongoose.connect(
+    config.mongourl,
+    { useNewUrlParser: true }
+  );
 });
 
 // This event will run on every single message received, from any channel or DM.

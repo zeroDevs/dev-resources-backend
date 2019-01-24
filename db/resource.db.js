@@ -1,17 +1,9 @@
-const mongoose = require('mongoose');
 const urlMetadata = require('url-metadata');
-const config = require('../config.json');
 const Resource = require('../models/resource.model');
 const validator = require('../validations/resource.vaidation');
 const authorValidator = require('../validations/author.validation');
 const linkValidator = require('../validations/link.valdation');
 const utils = require('../utils');
-
-mongoose.set('useCreateIndex', true)
-mongoose.connect(
-  config.mongourl,
-  { useNewUrlParser: true }
-);
 
 const resourceHandler = {};
 
