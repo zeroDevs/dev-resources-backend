@@ -10,6 +10,7 @@
     "url-metadata": "^2.2.1"
   },
   "devDependencies": {
+    "mocha": "^5.2.0",
     "nodemon": "^1.18.9"
   },
   "scripts": {
