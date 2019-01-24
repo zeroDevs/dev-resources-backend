@@ -7,10 +7,10 @@ const authorValidator = require('../validations/author.validation');
 const linkValidator = require('../validations/link.valdation');
 const utils = require('../utils');
 
-mongoose.Promise = Promise;
+mongoose.set('useCreateIndex', true)
 mongoose.connect(
   config.mongourl,
-  { useMongoClient: true }
+  { useNewUrlParser: true }
 );
 
 const resourceHandler = {};

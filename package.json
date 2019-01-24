@@ -5,9 +5,9 @@
   "main": "index.js",
   "dependencies": {
     "discord.js": "^11.4.2",
-    "mongoose": "^4.13.18",
-    "url-metadata": "^2.2.1",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "mongoose": "^5.4.6",
+    "url-metadata": "^2.2.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.9"
