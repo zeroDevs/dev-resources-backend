@@ -15,8 +15,7 @@
   },
   "scripts": {
     "dev": "nodemon bot.js",
-    "start": "node bot.js",
-    "test": "mocha \"./{,!(node_modules)/**/}*.test.js\" --reporter nyan"
+    "start": "node bot.js"
   },
   "repository": {
     "type": "git",
