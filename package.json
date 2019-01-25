@@ -2,7 +2,7 @@
   "name": "devRes-Bot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "bot.js",
   "dependencies": {
     "discord.js": "^11.4.2",
     "express": "^4.16.4",
