@@ -16,7 +16,8 @@
   },
   "scripts": {
     "dev": "nodemon bot.js",
-    "start": "node bot.js"
+    "start": "dotenv -e envs/.env node bot.js",
+    "test": "dotenv -e envs/test.env -e envs/.env mocha"
   },
   "repository": {
     "type": "git",
