@@ -5,6 +5,7 @@
   "main": "bot.js",
   "dependencies": {
     "discord.js": "^11.4.2",
+    "dotenv-cli": "^1.4.0",
     "express": "^4.16.4",
     "mongoose": "^5.4.6",
     "url-metadata": "^2.2.1"
@@ -15,7 +16,8 @@
   },
   "scripts": {
     "dev": "nodemon bot.js",
-    "start": "node bot.js"
+    "start": "dotenv -e envs/.env node bot.js",
+    "test": "dotenv -e envs/test.env -e envs/.env mocha \"./{,!(node_modules)/**/}*.test.js\" --reporter nyan"
   },
   "repository": {
     "type": "git",

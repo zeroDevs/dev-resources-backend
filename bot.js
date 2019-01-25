@@ -3,10 +3,6 @@ const Discord = require('discord.js');
 const mongoose = require('mongoose');
 const client = new Discord.Client();
 
-// Here we load the config.json file that contains our token and our prefix values.
-// config.token contains the bot's token
-// config.prefix contains the message prefix.
-const config = require('./configs/general.configs');
 const dbHandler = require('./db/resource.db');
 const web = require('./app');
 
@@ -22,19 +18,18 @@ client.on('ready', async () => {
 
   // This will console log the bots invite code
   try {
-    let link = await client.generateInvite(["ADMINISTRATOR"]);
-    console.log("Bot Invite: " + link);
+    let link = await client.generateInvite(['ADMINISTRATOR']);
+    console.log('Bot Invite: ' + link);
   } catch (e) {
-    console.log(e.stack)
+    console.log(e.stack);
   }
 
   //Connect to the database
   mongoose.set('useCreateIndex', true);
   mongoose.connect(
-    config.mongoUrl,
+    process.env.MONGO_URL,
     { useNewUrlParser: true }
   );
-
 });
 
 // This event will run on every single message received, from any channel or DM.
@@ -44,15 +39,15 @@ client.on('message', async message => {
   if (message.author.bot) return;
 
   // Also good practice to ignore any message that does not start with our prefix,
-  // which is set in the configuration file.
-  if (message.content.indexOf(config.prefix) !== 0) return;
+  // which is set in the environmental variable.
+  if (message.content.indexOf(process.env.PREFIX) !== 0) return;
 
   // Here we separate our "command" name, and our "arguments" for the command.
   // e.g. if we have the message "+say Is this the real life?" , we'll get the following:
   // command = say
   // args = ["Is", "this", "the", "real", "life?"]
   const args = message.content
-    .slice(config.prefix.length)
+    .slice(process.env.PREFIX.length)
     .trim()
     .split(/ +/g);
   const command = args.shift().toLowerCase();
@@ -72,18 +67,4 @@ client.on('message', async message => {
   }
 });
 
-client.login((config.botToken));
-
-// DB Test Case
-//
-// dbHandler
-//   .create({
-//     link: 'https://www.youtube.com/',
-//     author: {
-//       id: 'test',
-//       username: 'test',
-//       discriminator: 'test'
-//     }
-//   })
-//   .then(response => console.log(response))
-//   .catch(error => console.log(error));
+client.login(process.env.BOT_TOKEN);
