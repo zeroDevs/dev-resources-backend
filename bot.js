@@ -8,6 +8,7 @@ const client = new Discord.Client();
 // config.prefix contains the message prefix.
 const config = require('./configs/general.configs');
 const dbHandler = require('./db/resource.db');
+const web = require('./app');
 
 // This event will run if the bot starts, and logs in, successfully.
 client.on('ready', async () => {
