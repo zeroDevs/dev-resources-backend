@@ -10,6 +10,7 @@
     "url-metadata": "^2.2.1"
   },
   "devDependencies": {
+    "dotenv-cli": "^1.4.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.9"
   },
