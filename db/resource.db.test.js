@@ -5,6 +5,7 @@ const resourceHandler = require('./resource.db');
 const resourceSeed = require('../seeds/resources.seed');
 
 before(done => {
+  process.env.MONGO_URL
   mongoose.set('useCreateIndex', true);
   mongoose
     .connect(
