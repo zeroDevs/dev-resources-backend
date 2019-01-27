@@ -17,7 +17,8 @@
   "scripts": {
     "dev": "nodemon bot.js",
     "start": "dotenv -e envs/.env node bot.js",
-    "test": "dotenv -e envs/test.env -e envs/.env mocha \"./{,!(node_modules)/**/}*.test.js\" --reporter nyan"
+    "test": "dotenv -e envs/test.env -e envs/.env mocha \"./{,!(node_modules)/**/}*.test.js\" --reporter nyan",
+    "value": "dotenv -p BOT_TOKEN"
   },
   "repository": {
     "type": "git",
