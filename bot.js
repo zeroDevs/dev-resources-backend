@@ -1,12 +1,21 @@
 // Load up the discord.js library
 const Discord = require('discord.js');
 const mongoose = require('mongoose');
+const urlMetadata = require('url-metadata')
 const client = new Discord.Client();
 
 const dbHandler = require('./db/resource.db');
 const web = require('./app');
 
 let receveingChannel;
+
+function getUrl (message) {
+  let regex = /(?:https?|ftp|www)(?=:\/\/|\.)[\n\S]+/g;
+  let urls = message.match(regex);
+  
+  return urls;
+}
+
 // This event will run if the bot starts, and logs in, successfully.
 client.on('ready', async () => {
   console.log(
@@ -20,7 +29,7 @@ client.on('ready', async () => {
   // This will console log the bots invite code
   try {
     //the dev-resource channel id should go here
-    receveingChannel = client.channels.get('520663989819277312');
+    receveingChannel = client.channels.get('538396658023792660');
     let link = await client.generateInvite(['ADMINISTRATOR']);
     console.log('Bot Invite: ' + link);
   } catch (e) {
@@ -100,7 +109,7 @@ client.on('raw', async event => {
   client.emit(events[event.t], reaction, user);
 });
 
-//listens for added reaction
+
 client.on('messageReactionAdd', async (reaction, user) => {
 
   //checks for specific emoji(for now use the thinking emoji) and also that the reaction 
@@ -117,16 +126,40 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
   if (message.author.bot) return; //resource was not sent by a bot
   
+  if (reaction.message.channel.id === receveingChannel.id) return;
   
-  receveingChannel.send({embed: {
-    color: 4647373,
-    title: "A useful resource",
-    description: message.content,
-    author: {
-      name: message.author.username,
-      icon_url: message.author.avatarURL
-    }
-  }});
+  let messageUrls = getUrl(message.content);
+  
+  if (messageUrls)
+  {
+    let metaUrls = messageUrls.map( async url => {
+      try {
+        let metadata = await urlMetadata(url);
+        return metadata;
+      }
+      catch (e) {
+        console.log('an error occurred');
+      }
+    })
+
+    //resolves the promise and send an embed for each url in a message
+    Promise.all(metaUrls).then(urls => {
+      urls.forEach(url => {
+        if (url) {
+          receveingChannel.send({embed: {
+            color: 4647373,
+            title: url.title,
+            url: url.url,
+            description: url.url,
+            author: {
+              name: message.author.username,
+              icon_url: message.author.avatarURL
+            }
+          }});
+        }
+      });
+    })
+  }
 });
 
 //listen for a reaction removed
