@@ -146,16 +146,20 @@ client.on('messageReactionAdd', async (reaction, user) => {
     Promise.all(metaUrls).then(urls => {
       urls.forEach(url => {
         if (url) {
-          receveingChannel.send({embed: {
-            color: 4647373,
-            title: url.title,
-            url: url.url,
-            description: url.url,
-            author: {
-              name: message.author.username,
-              icon_url: message.author.avatarURL
-            }
-          }});
+
+          dbHandler.create({link: url.url, author: message.author})
+          .then(() => {
+            receveingChannel.send({embed: {
+              color: 4647373,
+              title: url.title,
+              url: url.url,
+              description: url.url,
+              author: {
+                name: message.author.username,
+                icon_url: message.author.avatarURL
+              }
+            }});
+          }).catch((e) => console.log(e.message));
         }
       });
     })
