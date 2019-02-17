@@ -3,12 +3,18 @@
  * This are the routes for manipulating _resources_
  */
 const route = require('express').Router();
+const dbHandler = require('../db/resource.db');
 
 /**
  * `/all` - Returns all entries available in database
  */
-route.get('/all', (req, res) => {
-    res.send('code to find and return all resources')
+route.get('/all', async (req, res) => {
+    const data = await dbHandler.readAll();
+    console.log(data.error, data.message);
+    
+    if(data.error) res.send('Something went wrong, try again later!');
+    else res.json(data.payload.resources);
+    
 })
 
 /**
