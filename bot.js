@@ -124,7 +124,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
   if (reaction.message.channel.id === receveingChannel.id) return;
 
   let messageUrls = getUrl(message.content);
-
+ 
   if (messageUrls) {
     let authorObj = {
       id: message.author.id,
