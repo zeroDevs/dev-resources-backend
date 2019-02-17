@@ -32,7 +32,9 @@ client.on('ready', async () => {
 
   //Connect to the database
   mongoose.set('useCreateIndex', true);
-  mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
+  mongoose
+    .connect(process.env.MONGO_URL, { useNewUrlParser: true })
+    .then(() => console.log('Connected to the database'));
 });
 
 // This event will run on every single message received, from any channel or DM.
@@ -124,34 +126,33 @@ client.on('messageReactionAdd', async (reaction, user) => {
   let messageUrls = getUrl(message.content);
 
   if (messageUrls) {
-    let metaUrls = messageUrls.map(async url => {
-      try {
-        let metadata = await urlMetadata(url);
-        return metadata;
-      } catch (e) {
-        console.log('an error occurred');
-      }
-    });
-
-    //resolves the promise and send an embed for each url in a message
-    Promise.all(metaUrls).then(urls => {
-      urls.forEach(url => {
-        if (url) {
+    let authorObj = {
+      id: message.author.id,
+      username: message.author.username,
+      discriminator: message.author.discriminator,
+      avatar: message.author.avatarURL
+    };
+    Promise.all(
+      messageUrls.map(url => dbHandler.create({ link: url, author: authorObj }))
+    )
+      .then(responses => {
+        console.log(responses);
+        responses.forEach(response => {
           receveingChannel.send({
             embed: {
               color: 4647373,
-              title: url.title,
-              url: url.url,
-              description: url.url,
+              title: response.payload.title,
+              url: response.payload.url,
+              description: response.payload.description,
               author: {
                 name: message.author.username,
                 icon_url: message.author.avatarURL
               }
             }
           });
-        }
-      });
-    });
+        });
+      })
+      .catch(errors => console.log(errors));
   }
 });
 
