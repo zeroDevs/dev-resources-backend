@@ -34,6 +34,11 @@ resourceHandler.create = ({ link, author }) => {
             } else {
               response.error = false;
               response.message = 'Successfully added into the database';
+              response.payload = {
+                title: metadata.title,
+                url: link,
+                description: metadata.description
+              };
               resolve(response);
             }
           });
