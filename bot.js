@@ -144,6 +144,9 @@ client.on('messageReactionAdd', async (reaction, user) => {
               title: response.payload.title,
               url: response.payload.url,
               description: response.payload.description,
+              thumbnail: {
+                "url": response.payload.image
+              },
               author: {
                 name: message.author.username,
                 icon_url: message.author.avatarURL

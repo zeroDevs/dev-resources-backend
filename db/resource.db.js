@@ -37,7 +37,8 @@ resourceHandler.create = ({ link, author }) => {
               response.payload = {
                 title: metadata.title,
                 url: link,
-                description: metadata.description
+                description: metadata.description,
+                image: metadata.image
               };
               resolve(response);
             }
@@ -51,7 +52,7 @@ resourceHandler.create = ({ link, author }) => {
   });
 };
 
-resourceHandler.read = ({ pageNumber, limit }) => {
+resourceHandler.read = ({ pageNumber, limit }) => { 
   return new Promise((resolve, reject) => {
     let response = {
       error: true,
