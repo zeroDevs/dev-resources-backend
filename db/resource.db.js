@@ -34,6 +34,11 @@ resourceHandler.create = ({ link, author }) => {
             } else {
               response.error = false;
               response.message = 'Successfully added into the database';
+              response.payload = {
+                title: metadata.title,
+                url: link,
+                description: metadata.description
+              };
               resolve(response);
             }
           });
@@ -154,6 +159,66 @@ resourceHandler.delete = link => {
       response.message = 'Successfully deleted the link';
       resolve(response);
     });
+  });
+};
+
+resourceHandler.search = (searchKey, { pageNumber, limit }) => {
+  return new Promise((resolve, reject) => {
+    let response = {
+      error: true,
+      message: 'Something went wrong. Please try again later'
+    };
+    let escapedSearchKey = utils.escapeString(searchKey);
+    let regExpKey = new RegExp(`.*${escapedSearchKey}.*`, 'u');
+    Resource.find({
+      $or: [
+        { link: regExpKey },
+        { 'meta.title': regExpKey },
+        { 'meta.description': regExpKey }
+      ]
+    })
+      .sort({ createdAt: -1 })
+      .skip((pageNumber - 1) * limit)
+      .limit(limit)
+      .exec((error, resources) => {
+        if (error) reject(response);
+        response.error = false;
+        response.message = 'Search operation was successful';
+        response.payload = {
+          start: pageNumber * limit - limit + 1,
+          end: pageNumber * limit,
+          resources
+        };
+        resolve(response);
+      });
+  });
+};
+
+resourceHandler.searchAll = searchKey => {
+  return new Promise((resolve, reject) => {
+    let response = {
+      error: true,
+      message: 'Something went wrong. Please try again later'
+    };
+    let escapedSearchKey = utils.escapeString(searchKey);
+    let regExpKey = new RegExp(`.*${escapedSearchKey}.*`, 'u');
+    Resource.find({
+      $or: [
+        { link: regExpKey },
+        { 'meta.title': regExpKey },
+        { 'meta.description': regExpKey }
+      ]
+    })
+      .sort({ createdAt: -1 })
+      .exec((error, resources) => {
+        if (error) reject(response);
+        response.error = false;
+        response.message = 'Search operation was successful';
+        response.payload = {
+          resources
+        };
+        resolve(response);
+      });
   });
 };
 

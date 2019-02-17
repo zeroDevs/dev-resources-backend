@@ -1,10 +1,14 @@
 // Load up the discord.js library
 const Discord = require('discord.js');
 const mongoose = require('mongoose');
+const urlMetadata = require('url-metadata');
 const client = new Discord.Client();
+const getUrl = require('./utils').getUrl;
 
 const dbHandler = require('./db/resource.db');
 const web = require('./app');
+
+let receveingChannel;
 
 // This event will run if the bot starts, and logs in, successfully.
 client.on('ready', async () => {
@@ -18,6 +22,8 @@ client.on('ready', async () => {
 
   // This will console log the bots invite code
   try {
+    //the dev-resource channel id should go here
+    receveingChannel = client.channels.get(process.env.RESOURCES_CHANNEL);
     let link = await client.generateInvite(['ADMINISTRATOR']);
     console.log('Bot Invite: ' + link);
   } catch (e) {
@@ -26,10 +32,9 @@ client.on('ready', async () => {
 
   //Connect to the database
   mongoose.set('useCreateIndex', true);
-  mongoose.connect(
-    process.env.MONGO_URL,
-    { useNewUrlParser: true }
-  );
+  mongoose
+    .connect(process.env.MONGO_URL, { useNewUrlParser: true })
+    .then(() => console.log('Connected to the database'));
 });
 
 // This event will run on every single message received, from any channel or DM.
@@ -64,6 +69,99 @@ client.on('message', async message => {
         client.ping
       )}ms`
     );
+  }
+});
+
+const events = {
+  MESSAGE_REACTION_ADD: 'messageReactionAdd',
+  MESSAGE_REACTION_REMOVE: 'messageReactionRemove'
+};
+
+//listen for events specified in the events object above
+client.on('raw', async event => {
+  if (!events.hasOwnProperty(event.t)) return;
+
+  const { d } = event; //gets useful data from the event, like user_id, channel_id....
+  const channel = client.channels.get(d.channel_id);
+  const user = client.users.get(d.user_id);
+
+  if (event.t !== 'MESSAGE_REACTION_REMOVE')
+    if (channel.messages.has(d.message_id)) return;
+
+  const message = await channel.fetchMessage(d.message_id);
+
+  const emojiKey = d.emoji.id ? d.emoji.id : d.emoji.name;
+  let reaction = message.reactions.get(emojiKey);
+
+  if (!reaction) {
+    // Create an object that can be passed through the event like normal
+    const emoji = new Discord.Emoji(client.guilds.get(d.guild_id), d.emoji);
+    reaction = new Discord.MessageReaction(
+      message,
+      emoji,
+      1,
+      d.user_id === client.user.id
+    );
+  }
+
+  client.emit(events[event.t], reaction, user);
+});
+
+client.on('messageReactionAdd', async (reaction, user) => {
+  //checks for specific emoji(for now use the thinking emoji) and also that the reaction
+  //was not made by a bot
+  if (reaction.emoji.name !== process.env.RUSTY_EMOJI || user.bot) return;
+
+  if (reaction.count > 1) {
+    client.emit('messageReactionRemove', reaction, user);
+    return;
+  }
+
+  const message = reaction.message;
+
+  if (message.author.bot) return; //resource was not sent by a bot
+
+  if (reaction.message.channel.id === receveingChannel.id) return;
+
+  let messageUrls = getUrl(message.content);
+
+  if (messageUrls) {
+    let authorObj = {
+      id: message.author.id,
+      username: message.author.username,
+      discriminator: message.author.discriminator,
+      avatar: message.author.avatarURL
+    };
+    Promise.all(
+      messageUrls.map(url => dbHandler.create({ link: url, author: authorObj }))
+    )
+      .then(responses => {
+        console.log(responses);
+        responses.forEach(response => {
+          receveingChannel.send({
+            embed: {
+              color: 4647373,
+              title: response.payload.title,
+              url: response.payload.url,
+              description: response.payload.description,
+              author: {
+                name: message.author.username,
+                icon_url: message.author.avatarURL
+              }
+            }
+          });
+        });
+      })
+      .catch(errors => console.log(errors));
+  }
+});
+
+//listen for a reaction removed
+client.on('messageReactionRemove', (reaction, user) => {
+  if (reaction.emoji.name !== process.env.RUSTY_EMOJI) return;
+  const message = reaction.message;
+  if (reaction.count >= 1) {
+    message.react(process.env.RUSTY_EMOJI);
   }
 });
 
