@@ -111,7 +111,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
   //checks for specific emoji(for now use the thinking emoji) and also that the reaction
   //was not made by a bot
   if (reaction.emoji.name !== process.env.RUSTY_EMOJI || user.bot) return;
-
+  
   if (reaction.count > 1) {
     client.emit('messageReactionRemove', reaction, user);
     return;
@@ -122,9 +122,9 @@ client.on('messageReactionAdd', async (reaction, user) => {
   if (message.author.bot) return; //resource was not sent by a bot
 
   if (reaction.message.channel.id === receveingChannel.id) return;
-
   let messageUrls = getUrl(message.content);
- 
+  console.log(messageUrls)
+
   if (messageUrls) {
     let authorObj = {
       id: message.author.id,
