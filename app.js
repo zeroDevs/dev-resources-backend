@@ -14,6 +14,6 @@ app.use('/', homeRoute);
 app.use('/user', userRoute);
 app.use('/resource', resourceRoute);
 
-app.listen(port, function() {
+app.listen(port, function () {
     console.log('Our app is running on port:' + port);
 });
