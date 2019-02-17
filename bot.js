@@ -23,7 +23,7 @@ client.on('ready', async () => {
   // This will console log the bots invite code
   try {
     //the dev-resource channel id should go here
-    receveingChannel = client.channels.get('537017104197615638');
+    receveingChannel = client.channels.get(process.env.RESOURCES_CHANNEL);
     let link = await client.generateInvite(['ADMINISTRATOR']);
     console.log('Bot Invite: ' + link);
   } catch (e) {
@@ -108,7 +108,7 @@ client.on('raw', async event => {
 client.on('messageReactionAdd', async (reaction, user) => {
   //checks for specific emoji(for now use the thinking emoji) and also that the reaction
   //was not made by a bot
-  if (reaction.emoji.name !== '🤔' || user.bot) return;
+  if (reaction.emoji.name !== process.env.RUSTY_EMOJI || user.bot) return;
 
   if (reaction.count > 1) {
     client.emit('messageReactionRemove', reaction, user);
@@ -157,10 +157,10 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
 //listen for a reaction removed
 client.on('messageReactionRemove', (reaction, user) => {
-  if (reaction.emoji.name !== '🤔') return;
+  if (reaction.emoji.name !== process.env.RUSTY_EMOJI) return;
   const message = reaction.message;
   if (reaction.count >= 1) {
-    message.react('🤔');
+    message.react(process.env.RUSTY_EMOJI);
   }
 });
 
