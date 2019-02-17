@@ -29,7 +29,7 @@ client.on('ready', async () => {
   // This will console log the bots invite code
   try {
     //the dev-resource channel id should go here
-    receveingChannel = client.channels.get('538396658023792660');
+    receveingChannel = client.channels.get('537017104197615638');
     let link = await client.generateInvite(['ADMINISTRATOR']);
     console.log('Bot Invite: ' + link);
   } catch (e) {
