@@ -110,9 +110,14 @@ client.on('raw', async event => {
 client.on('messageReactionAdd', async (reaction, user) => {
   //checks for specific emoji(for now use the thinking emoji) and also that the reaction
   //was not made by a bot
+  console.log(1)
+  console.log(reaction.emoji.name, process.env.RUSTY_EMOJI)
   if (reaction.emoji.name !== process.env.RUSTY_EMOJI || user.bot) return;
-
-  if (reaction.count > 1) {
+  
+  console.log(2)
+  
+  if (reaction.count >= 1) {
+    console.log("REACTION")
     client.emit('messageReactionRemove', reaction, user);
     return;
   }
