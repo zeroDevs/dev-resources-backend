@@ -4,7 +4,6 @@ const validator = require('../validations/resource.vaidation');
 const authorValidator = require('../validations/author.validation');
 const linkValidator = require('../validations/link.valdation');
 const utils = require('../utils');
-const logger = require('../logger').log;
 
 const resourceHandler = {};
 
@@ -29,17 +28,10 @@ resourceHandler.create = ({ link, author }) => {
           });
           resource.save(error => {
             if (error) {
-              response.message =
-                'There is a problem adding into the database. Please try agian later';
-              logger({
-                author: author.username,
-                raisedBy: 'N/A',
-                type: 'Manual Link Submission',
-                url: link,
-                status: 'Error',
-                message: error.message,
-                avatar: author.avatar
-              });
+              response.message = error.message;
+              response.payload = {
+                url: link
+              };
               reject(response);
             } else {
               response.error = false;
@@ -50,14 +42,6 @@ resourceHandler.create = ({ link, author }) => {
                 description: metadata.description,
                 image: metadata.image
               };
-              logger({
-                author: author.username,
-                raisedBy: 'N/A',
-                type: 'Manual Link Submission',
-                url: link,
-                status: 'Added to Database',
-                avatar: author.avatar
-              });
               resolve(response);
             }
           });
@@ -65,15 +49,9 @@ resourceHandler.create = ({ link, author }) => {
       })
       .catch(error => {
         response.message = error.message;
-        logger({
-          author: author.username,
-          raisedBy: 'N/A',
-          type: 'Manual Link Submission',
-          url: link,
-          status: 'Error',
-          message: error.message,
-          avatar: author.avatar
-        });
+        response.payload = {
+          url: link
+        };
         reject(response);
       });
   });

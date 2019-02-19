@@ -17,7 +17,6 @@ logger.log = ({ type, url, author, raisedBy, status, message, avatar }) => {
   const fileName = `${new Date().getUTCFullYear()}-${utils.paddTwo(
     new Date().getUTCMonth() + 1
   )}-${utils.paddTwo(new Date().getUTCDate())}.log`;
-  console.log(fileName);
   fs.appendFile(
     path.resolve(__dirname, '../logs/', fileName),
     log,
@@ -26,7 +25,7 @@ logger.log = ({ type, url, author, raisedBy, status, message, avatar }) => {
       if (err) console.log(err);
     }
   );
-  if (status === 'Added to Database')
+  if (status === 'Success')
     sendEmbed({ author, avatar, url, status, message, type, color: 0x00ff00 });
   if (status === 'Error')
     sendEmbed({ author, avatar, url, status, message, type, color: 0xff0000 });
@@ -51,13 +50,15 @@ const sendEmbed = ({ author, avatar, url, status, type, message, color }) => {
           name: 'Status',
           value: status,
           inline: true
+        },
+        {
+          name: 'Message',
+          value: message
         }
       ],
       timestamp: new Date()
     }
   };
-  if (status === 'Error')
-    embedMessage.embed.fields.push({ name: 'Error Message', value: message });
   logChannel.send(embedMessage);
 };
 

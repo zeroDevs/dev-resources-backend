@@ -50,7 +50,6 @@ module.exports = async (client, reaction, user) => {
       })
     )
       .then(responses => {
-        console.log(responses);
         responses.forEach(response => {
           receveingChannel.send({
             embed: {
@@ -72,10 +71,22 @@ module.exports = async (client, reaction, user) => {
             raisedBy: user.username,
             type: 'Manual Link Submission',
             url: response.payload.url,
-            status: 'Resource Posted'
+            status: 'Success',
+            avatar: message.author.avatarURL,
+            message: response.message
           });
         });
       })
-      .catch(errors => console.log(errors));
+      .catch(error => {
+        logger({
+          author: message.author.username,
+          raisedBy: user.username,
+          type: 'Manual Link Submission',
+          url: error.payload.url,
+          status: 'Error',
+          message: error.message,
+          avatar: message.author.avatarURL
+        });
+      });
   }
 };
