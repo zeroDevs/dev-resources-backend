@@ -28,8 +28,10 @@ resourceHandler.create = ({ link, author }) => {
           });
           resource.save(error => {
             if (error) {
-              response.message =
-                'There is a problem adding into the database. Please try agian later';
+              response.message = error.message;
+              response.payload = {
+                url: link
+              };
               reject(response);
             } else {
               response.error = false;
@@ -47,12 +49,15 @@ resourceHandler.create = ({ link, author }) => {
       })
       .catch(error => {
         response.message = error.message;
+        response.payload = {
+          url: link
+        };
         reject(response);
       });
   });
 };
 
-resourceHandler.read = ({ pageNumber, limit }) => { 
+resourceHandler.read = ({ pageNumber, limit }) => {
   return new Promise((resolve, reject) => {
     let response = {
       error: true,
