@@ -14,6 +14,6 @@ class Response {
   }
 
   setPayload(payload) {
-    this.payload = { ...this.payload, ...payload };
+    this.payload = { ...payload };
   }
 }

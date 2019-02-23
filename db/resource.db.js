@@ -10,10 +10,7 @@ const resourceHandler = {};
 
 resourceHandler.create = ({ link, author }) => {
   return new Promise((resolve, reject) => {
-    let response = {
-      error: true,
-      message: ''
-    };
+    const response = new Response();
     validator({ link, author })
       .then(() => {
         urlMetadata(link).then(metadata => {
@@ -29,30 +26,26 @@ resourceHandler.create = ({ link, author }) => {
           });
           resource.save(error => {
             if (error) {
-              response.message = error.message;
-              response.payload = {
-                url: link
-              };
+              response.setMessage(error.message);
+              response.setPayload({ url: link });
               reject(response);
             } else {
-              response.error = false;
-              response.message = 'Successfully added into the database';
-              response.payload = {
+              response.setSuccess();
+              response.setMessage('Successfully added into the database');
+              response.setPayload({
                 title: metadata.title,
                 url: link,
                 description: metadata.description,
                 image: metadata.image
-              };
+              });
               resolve(response);
             }
           });
         });
       })
       .catch(error => {
-        response.message = error.message;
-        response.payload = {
-          url: link
-        };
+        response.setMessage(error.message);
+        response.setPayload({ url: link });
         reject(response);
       });
   });
@@ -60,23 +53,20 @@ resourceHandler.create = ({ link, author }) => {
 
 resourceHandler.read = ({ pageNumber, limit }) => {
   return new Promise((resolve, reject) => {
-    let response = {
-      error: true,
-      message: 'Something went wrong. Please try again later'
-    };
+    const response = new Response();
     Resource.find({})
       .sort({ createdAt: -1 })
       .skip((pageNumber - 1) * limit)
       .limit(limit)
       .exec((error, resources) => {
         if (error) reject(response);
-        response.error = false;
-        response.message = 'Successfully retrieved the resources collection';
-        response.payload = {
+        response.setSuccess();
+        response.setMessage('Successfully retrieved the resources collection');
+        response.setPayload({
           start: pageNumber * limit - limit + 1,
           end: pageNumber * limit,
           resources
-        };
+        });
         resolve(response);
       });
   });
@@ -84,19 +74,16 @@ resourceHandler.read = ({ pageNumber, limit }) => {
 
 resourceHandler.readAll = () => {
   return new Promise((resolve, reject) => {
-    let response = {
-      error: true,
-      message: 'Something went wrong. Please try again later'
-    };
+    const response = new Response();
     Resource.find({})
       .sort({ createdAt: -1 })
       .exec((error, resources) => {
         if (error) reject(response);
-        response.error = false;
-        response.message = 'Successfully retrieved the resources collection';
-        response.payload = {
+        response.setSuccess();
+        response.setMessage('Successfully retrieved the resources collection');
+        response.setPayload({
           resources
-        };
+        });
         resolve(response);
       });
   });
@@ -104,10 +91,7 @@ resourceHandler.readAll = () => {
 
 resourceHandler.updateLink = ({ oldLink, newLink }) => {
   return new Promise((resolve, reject) => {
-    let response = {
-      error: true,
-      message: 'Something went wrong. Please try again later'
-    };
+    const response = new Response();
     linkValidator(newLink)
       .then(() => {
         Resource.findOneAndUpdate(
@@ -115,14 +99,14 @@ resourceHandler.updateLink = ({ oldLink, newLink }) => {
           { $set: { link: newLink } },
           error => {
             if (error) reject(response);
-            response.error = false;
-            response.message = 'Successfully updated the link';
+            response.setSuccess();
+            response.setMessage('Successfully updated the link');
             resolve(response);
           }
         );
       })
       .catch(error => {
-        response.message = error.message;
+        response.setMessage(error.message);
         reject(response);
       });
   });
@@ -130,10 +114,7 @@ resourceHandler.updateLink = ({ oldLink, newLink }) => {
 
 resourceHandler.updateAuthor = ({ link, author }) => {
   return new Promise((resolve, reject) => {
-    let response = {
-      error: true,
-      message: 'Something went wrong. Please try again later'
-    };
+    const response = new Response();
     authorValidator(author)
       .then(() => {
         Resource.findOneAndUpdate(
@@ -141,14 +122,14 @@ resourceHandler.updateAuthor = ({ link, author }) => {
           { $set: { author: author } },
           error => {
             if (error) reject(response);
-            response.error = false;
-            response.message = 'Successfully updated the author';
+            response.setSuccess();
+            response.setMessage('Successfully updated the author');
             resolve(response);
           }
         );
       })
       .catch(error => {
-        response.message = error.message;
+        response.setMessage(error.message);
         reject(response);
       });
   });
@@ -156,14 +137,11 @@ resourceHandler.updateAuthor = ({ link, author }) => {
 
 resourceHandler.delete = link => {
   return new Promise((resolve, reject) => {
-    let response = {
-      error: true,
-      message: 'Something went wrong. Please try again later'
-    };
+    const response = new Response();
     Resource.deleteOne({ link }, error => {
       if (error) reject(response);
-      response.error = false;
-      response.message = 'Successfully deleted the link';
+      response.setSuccess();
+      response.setMessage('Successfully deleted the link');
       resolve(response);
     });
   });
@@ -171,10 +149,7 @@ resourceHandler.delete = link => {
 
 resourceHandler.search = (searchKey, { pageNumber, limit }) => {
   return new Promise((resolve, reject) => {
-    let response = {
-      error: true,
-      message: 'Something went wrong. Please try again later'
-    };
+    const response = new Response();
     let escapedSearchKey = utils.escapeString(searchKey);
     let regExpKey = new RegExp(`.*${escapedSearchKey}.*`, 'u');
     Resource.find({
@@ -189,13 +164,13 @@ resourceHandler.search = (searchKey, { pageNumber, limit }) => {
       .limit(limit)
       .exec((error, resources) => {
         if (error) reject(response);
-        response.error = false;
-        response.message = 'Search operation was successful';
-        response.payload = {
+        response.setSuccess();
+        response.setMessage('Search operation was successful');
+        response.setPayload({
           start: pageNumber * limit - limit + 1,
           end: pageNumber * limit,
           resources
-        };
+        });
         resolve(response);
       });
   });
@@ -203,10 +178,7 @@ resourceHandler.search = (searchKey, { pageNumber, limit }) => {
 
 resourceHandler.searchAll = searchKey => {
   return new Promise((resolve, reject) => {
-    let response = {
-      error: true,
-      message: 'Something went wrong. Please try again later'
-    };
+    const response = new Response();
     let escapedSearchKey = utils.escapeString(searchKey);
     let regExpKey = new RegExp(`.*${escapedSearchKey}.*`, 'u');
     Resource.find({
@@ -219,11 +191,11 @@ resourceHandler.searchAll = searchKey => {
       .sort({ createdAt: -1 })
       .exec((error, resources) => {
         if (error) reject(response);
-        response.error = false;
-        response.message = 'Search operation was successful';
-        response.payload = {
+        response.setSuccess();
+        response.setMessage('Search operation was successful');
+        response.setPayload({
           resources
-        };
+        });
         resolve(response);
       });
   });
@@ -231,10 +203,7 @@ resourceHandler.searchAll = searchKey => {
 
 resourceHandler.upvote = ({ link, userId }) => {
   return new Promise((resolve, reject) => {
-    let response = {
-      error: true,
-      message: 'Something went wrong. Please try again later'
-    };
+    const response = new Response();
     Resource.findOneAndUpdate(
       {
         link: link
@@ -246,8 +215,8 @@ resourceHandler.upvote = ({ link, userId }) => {
       },
       error => {
         if (error) reject(response);
-        response.error = false;
-        response.message = 'Successfully upvoted';
+        response.setSuccess();
+        response.setMessage('Successfully upvoted');
         resolve(response);
       }
     );
@@ -256,10 +225,7 @@ resourceHandler.upvote = ({ link, userId }) => {
 
 resourceHandler.downvote = ({ link, userId }) => {
   return new Promise((resolve, reject) => {
-    let response = {
-      error: true,
-      message: 'Something went wrong. Please try again later'
-    };
+    const response = new Response();
     Resource.findOneAndUpdate(
       {
         link: link
@@ -271,8 +237,8 @@ resourceHandler.downvote = ({ link, userId }) => {
       },
       error => {
         if (error) reject(response);
-        response.error = false;
-        response.message = 'Successfully downvoted';
+        response.setSuccess();
+        response.setMessage('Successfully downvoted');
         resolve(response);
       }
     );
@@ -281,17 +247,14 @@ resourceHandler.downvote = ({ link, userId }) => {
 
 resourceHandler.resourceCount = () => {
   return new Promise((resolve, reject) => {
-    let response = {
-      error: true,
-      message: 'Something went wrong. Please try again later'
-    };
+    const response = new Response();
     Resource.count({}, (error, count) => {
       if (error) reject(response);
-      response.error = false;
-      response.message = 'Count operation was successful';
-      response.payload = {
+      response.setSuccess();
+      response.setMessage('Count operation was successful');
+      response.setPayload({
         count
-      };
+      });
       resolve(response);
     });
   });
