@@ -4,6 +4,7 @@ const validator = require('../validations/resource.vaidation');
 const authorValidator = require('../validations/author.validation');
 const linkValidator = require('../validations/link.valdation');
 const utils = require('../utils');
+const Response = require('../utils/classes/Response');
 
 const resourceHandler = {};
 
@@ -275,6 +276,45 @@ resourceHandler.downvote = ({ link, userId }) => {
         resolve(response);
       }
     );
+  });
+};
+
+resourceHandler.resourceCount = () => {
+  return new Promise((resolve, reject) => {
+    let response = {
+      error: true,
+      message: 'Something went wrong. Please try again later'
+    };
+    Resource.count({}, (error, count) => {
+      if (error) reject(response);
+      response.error = false;
+      response.message = 'Count operation was successful';
+      response.payload = {
+        count
+      };
+      resolve(response);
+    });
+  });
+};
+
+resourceHandler.votesCount = () => {
+  return new Promise((resolve, reject) => {
+    const response = new Response();
+    Resource.find({}, (error, resources) => {
+      if (error) reject(response);
+      let payload = resources.reduce(
+        (acc, resource) => {
+          acc.upvotesCount += resource.upvotes.length;
+          acc.downvotesCount += resourc.upvotes.length;
+          return acc;
+        },
+        { upvotesCount: 0, downvotesCount: 0 }
+      );
+      response.setSuccess();
+      response.setMessage('Votes count operation was successful');
+      response.setPayload(payload);
+      resolve(respone);
+    });
   });
 };
 
