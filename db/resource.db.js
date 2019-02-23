@@ -228,4 +228,54 @@ resourceHandler.searchAll = searchKey => {
   });
 };
 
+resourceHandler.upvote = ({ link, userId }) => {
+  return new Promise((resolve, reject) => {
+    let response = {
+      error: true,
+      message: 'Something went wrong. Please try again later'
+    };
+    Resource.findOneAndUpdate(
+      {
+        link: link
+      },
+      {
+        $push: {
+          upvotes: userId
+        }
+      },
+      error => {
+        if (error) reject(response);
+        response.error = false;
+        response.message = 'Successfully upvoted';
+        resolve(response);
+      }
+    );
+  });
+};
+
+resourceHandler.downvote = ({ link, userId }) => {
+  return new Promise((resolve, reject) => {
+    let response = {
+      error: true,
+      message: 'Something went wrong. Please try again later'
+    };
+    Resource.findOneAndUpdate(
+      {
+        link: link
+      },
+      {
+        $push: {
+          downvotes: userId
+        }
+      },
+      error => {
+        if (error) reject(response);
+        response.error = false;
+        response.message = 'Successfully downvoted';
+        resolve(response);
+      }
+    );
+  });
+};
+
 module.exports = resourceHandler;
