@@ -1,4 +1,4 @@
-class Response {
+module.exports = class Response {
   constructor() {
     this.error = true;
     this.message = 'Something went wrong. Please try again later';
@@ -16,4 +16,4 @@ class Response {
   setPayload(payload) {
     this.payload = { ...payload };
   }
-}
+};
