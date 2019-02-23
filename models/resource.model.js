@@ -27,6 +27,16 @@ const ResourceSchema = new mongoose.Schema({
     },
     avatar: String
   },
+  upvotes: [
+    {
+      type: String
+    }
+  ],
+  downvotes: [
+    {
+      type: String
+    }
+  ],
   createdAt: {
     type: Date,
     default: Date.now
