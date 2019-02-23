@@ -1,5 +1,5 @@
 const urlMetadata = require('url-metadata');
-const ValidationError = require('./ValidationError');
+const ValidationError = require('../utils/classes/ValidationError');
 
 module.exports = link => {
   return new Promise((resolve, reject) => {

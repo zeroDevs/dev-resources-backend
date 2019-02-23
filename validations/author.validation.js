@@ -1,4 +1,4 @@
-const ValidationError = require('./ValidationError');
+const ValidationError = require('../utils/classes/ValidationError');
 
 module.exports = author => {
   return new Promise((resolve, reject) => {
