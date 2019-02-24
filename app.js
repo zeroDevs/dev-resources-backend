@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 
 const homeRoute = require('./routes/index.route');
 const userRoute = require('./routes/user.route');
@@ -9,6 +10,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 
 app.use('/', homeRoute);
 app.use('/user', userRoute);
