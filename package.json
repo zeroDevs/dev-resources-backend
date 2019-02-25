@@ -4,11 +4,13 @@
   "description": "",
   "main": "bot.js",
   "dependencies": {
+    "btoa": "^1.2.1",
     "cors": "^2.8.5",
     "discord.js": "^11.4.2",
     "dotenv-cli": "^1.4.0",
     "express": "^4.16.4",
     "mongoose": "^5.4.6",
+    "node-fetch": "^2.3.0",
     "url-metadata": "^2.2.1"
   },
   "devDependencies": {
@@ -17,7 +19,7 @@
   },
   "scripts": {
     "dev": "dotenv -e envs/.env nodemon bot.js",
-    "start": "dotenv -e envs/.env node bot.js",
+    "start": "dotenv -e envs/.env nodemon bot.js",
     "test": "dotenv -e envs/test.env -e envs/.env mocha \"./{,!(node_modules)/**/}*.test.js\" --reporter nyan"
   },
   "repository": {
