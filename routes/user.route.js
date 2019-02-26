@@ -12,7 +12,7 @@ const redirect = encodeURIComponent('http://localhost:3000/user/callback');
 
 /**
  * `/auth` should authenticating user
- * `/new` should register a new user
+ * `/new` should register a new user 
  */
 
 route.get('/auth', (req, res) => {
@@ -34,7 +34,6 @@ route.get('/callback', catchAsync(async (req, res) => {
         const json = await response.json();
         res.redirect(`/user/?token=${json.access_token}`);
 }));
-
 
 route.post('/new', (req, res) => res.send('register a new user'))
 
