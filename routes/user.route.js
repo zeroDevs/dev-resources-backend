@@ -32,7 +32,7 @@ route.get('/callback', catchAsync(async (req, res) => {
         });
 
         const json = await response.json();
-        res.redirect(`/?token=${json.access_token}`);
+        res.redirect(`/user/?token=${json.access_token}`);
 }));
 
 

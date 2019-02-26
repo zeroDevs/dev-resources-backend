@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const fetch = require('node-fetch');
 
 const homeRoute = require('./routes/index.route');
 const userRoute = require('./routes/user.route');
@@ -30,6 +31,19 @@ app.use((err, req, res, next) => {
             error: err.message
         });
     }
+});
+
+app.get('/user', (req, res) => {
+    if(req.query.token === undefined) return res.status(500).json({error: "no token"});
+
+    const token = req.query.token;
+    fetch('https://discordapp.com/api/users/@me', {
+        method: 'get',
+        headers: {'Authorization': `Bearer ${token}` }
+    })
+    .then(res => res.json())
+    .then(json => res.json(json));
+
 })
 
 app.listen(port, function() {
