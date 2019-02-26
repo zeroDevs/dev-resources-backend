@@ -19,7 +19,7 @@
   },
   "scripts": {
     "dev": "dotenv -e envs/.env nodemon bot.js",
-    "start": "dotenv -e envs/.env nodemon bot.js",
+    "start": "dotenv -e envs/.env node bot.js",
     "test": "dotenv -e envs/test.env -e envs/.env mocha \"./{,!(node_modules)/**/}*.test.js\" --reporter nyan"
   },
   "repository": {
