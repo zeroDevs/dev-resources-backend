@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const fetch = require('node-fetch');
 const DiscordStrategy = require('passport-discord').Strategy;
 const passport = require('passport');
 const session = require('express-session');
