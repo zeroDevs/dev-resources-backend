@@ -1,4 +1,4 @@
-const autoSubmit = require('../utils/auto-submit')
+const autoSubmit = require('../controller/auto-submit');
 
 module.exports = async (client, message) => {
 
