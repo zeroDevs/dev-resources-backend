@@ -45,7 +45,7 @@ module.exports = (client, message) => {
                         icon_url: message.author.avatarURL
                     }
                     }
-                });
+                }).then(sendEmbed => sendEmbed.react(process.env.SENT_EMOJI));
                 logger({
                     author: message.author.username,
                     type: 'Automatic Link Submission',
@@ -67,6 +67,11 @@ module.exports = (client, message) => {
                 });
                 console.log(error.message)
             });
+    }
+    else {
+        message.delete()
+        //.then((msg) => console.log(msg) )
+        //.catch(err => console.log("couldn't delete the message "+ err.msg))
     }
     
     // For the inital release version, this will do the job. We should eventually look at removing the original message
