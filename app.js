@@ -49,7 +49,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/auth/discord/callback', passport.authenticate('discord', {
+app.get('/user/auth/discord/callback', passport.authenticate('discord', {
     failureRedirect: '/'
 }), function(req, res) {
     res.redirect('/profile') // Successful auth
