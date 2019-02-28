@@ -26,7 +26,9 @@ app.use('/', homeRoute);
 app.use('/user', userRoute);
 app.use('/resource', resourceRoute);
 
-const scopes = ['identify', 'email'];
+const scopes = ['identify', 'guilds'];
+
+// "https://dev-resources.herokuapp.com/user/auth/discord/callback"
 
 passport.use(new DiscordStrategy({
     clientID: process.env.CLIENT_ID,
