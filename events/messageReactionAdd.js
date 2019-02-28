@@ -8,6 +8,7 @@ module.exports = async (client, reaction, user) => {
 
   if (reaction.emoji.name !== process.env.RUSTY_EMOJI || user.bot) return;
 
+  //console.log("adding reaction",reaction.count);
   if (reaction.count > 1) {
     client.emit('messageReactionRemove', reaction, user);
     return;
@@ -51,6 +52,7 @@ module.exports = async (client, reaction, user) => {
     )
       .then(responses => {
         responses.forEach(response => {
+          message.react(process.env.SENT_EMOJI);
           receveingChannel.send({
             embed: {
               color: 4647373,
@@ -65,7 +67,7 @@ module.exports = async (client, reaction, user) => {
                 icon_url: message.author.avatarURL
               }
             }
-          });
+          }).then(sendEmbed => sendEmbed.react(process.env.SENT_EMOJI));
           logger({
             author: message.author.username,
             raisedBy: user.username,
