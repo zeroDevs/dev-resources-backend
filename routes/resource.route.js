@@ -13,8 +13,22 @@ route.get('/all', async (req, res) => {
     console.log(data.error, data.message);
     
     if(data.error) res.send('Something went wrong, try again later!');
-    else res.json(data.payload.resources);
-    
+    else {
+        let prefixedData = {}
+        data.payload.resources.forEach(e => {
+            if(!e.meta.title) e.meta.title = "No Title Was Set"
+            const id = e._id
+            // Remove all non-alphanumerics
+            const stripSpecials = e.meta.title.replace(/[^a-zA-Z0-9 ]/g, "");
+            // Remove Duplicate space
+            const stripSpaces = stripSpecials.replace(/\s\s+/g, ' ');
+            //  Replace spaces with hyphens and convert to lowercase
+            const prefix = stripSpaces.replace(/\s+/g, '-').toLowerCase() + "-" + id.toString().slice(0, 5);
+            
+            prefixedData[prefix] = e
+        });
+        res.json(prefixedData);
+    }    
 })
 
 /**
