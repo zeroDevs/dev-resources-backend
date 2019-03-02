@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 const resourceHandler = {};
 
 resourceHandler.create = ({ link, author }) => {
+  console.log("slugggging out ", link);
   return new Promise((resolve, reject) => {
     const response = new Response();
     validator({ link, author })
@@ -29,7 +30,7 @@ resourceHandler.create = ({ link, author }) => {
               .toLowerCase() +
             '-' +
             _id.toString().slice(0, 5);
-          this._id.toString().slice(0, 5);
+          //this._id.toString().slice(0, 5);
           const resource = new Resource({
             link,
             meta,
