@@ -59,7 +59,7 @@ route.post('/:resourceSlug/:userId/upvote', (req, res) => {
         error: false,
         message: response.message,
         payload: {
-          count: response.payload.count
+          upvote: response.payload.upvote
         }
       });
     })
