@@ -231,7 +231,32 @@ resourceHandler.upvote = ({ slug, userId }) => {
         response.setMessage('Successfully upvoted');
         response.setPayload({
           upvote: resource.upvotes.length
-        })
+        });
+        resolve(response);
+      }
+    );
+  });
+};
+
+resourceHandler.setTag = ({ slug, tag }) => {
+  return new Promise((resolve, reject) => {
+    const response = new Response();
+    Resource.findOneAndUpdate(
+      {
+        slug
+      },
+      {
+        $addToSet: {
+          tags: tag
+        }
+      },
+      (error, resource) => {
+        if (error) reject(response);
+        response.setSuccess();
+        response.setMessage('Successfully added the tag');
+        response.setPayload({
+          tags: resource.tags
+        });
         resolve(response);
       }
     );
