@@ -22,7 +22,8 @@ resourceHandler.create = ({ link, author }) => {
           const resource = new Resource({
             link,
             meta,
-            author
+            author,
+            slug: 'slug'
           });
           resource.save(error => {
             if (error) {
