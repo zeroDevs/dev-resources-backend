@@ -74,6 +74,7 @@ route.post('/:resourceSlug/:userId/upvote', (req, res) => {
 route.post('/:resourceSlug/:userId/tag', (req, res) => {
   dbHandler
     .setTag({
+      userId: req.params.userId,
       slug: req.params.resourceSlug,
       tag: req.body.tag
     })

@@ -238,7 +238,7 @@ resourceHandler.upvote = ({ slug, userId }) => {
   });
 };
 
-resourceHandler.setTag = ({ slug, tag }) => {
+resourceHandler.setTag = ({ slug, tag, userId }) => {
   return new Promise((resolve, reject) => {
     const response = new Response();
     Resource.findOneAndUpdate(
@@ -247,7 +247,7 @@ resourceHandler.setTag = ({ slug, tag }) => {
       },
       {
         $addToSet: {
-          tags: tag
+          tags: tag.toLowerCase() + '-' + userId
         }
       },
       (error, resource) => {
