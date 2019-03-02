@@ -12,6 +12,11 @@ const ResourceSchema = new mongoose.Schema({
     required: 'Link is required',
     unique: 'Link exists already'
   },
+  slug: {
+    type: String,
+    required: 'Slug is required',
+    unique: 'Slug exists already'
+  },
   author: {
     id: {
       type: String,
