@@ -5,6 +5,7 @@ const authorValidator = require('../validations/author.validation');
 const linkValidator = require('../validations/link.valdation');
 const utils = require('../utils');
 const Response = require('../utils/classes/Response');
+const mongoose = require('mongoose');
 
 const resourceHandler = {};
 
@@ -19,11 +20,21 @@ resourceHandler.create = ({ link, author }) => {
             image: utils.normalizeUrl(metadata.image, utils.getDomain(link)),
             description: metadata.description
           };
+          const _id = mongoose.Types.ObjectId();
+          const slug =
+            meta.title
+              .replace(/[^a-zA-Z0-9 ]/g, '')
+              .replace(/\s\s+/g, ' ')
+              .replace(/\s+/g, '-')
+              .toLowerCase() +
+            '-' +
+            _id.toString().slice(0, 5);
+          this._id.toString().slice(0, 5);
           const resource = new Resource({
             link,
             meta,
             author,
-            slug: 'slug'
+            slug
           });
           resource.save(error => {
             if (error) {
@@ -210,14 +221,17 @@ resourceHandler.upvote = ({ slug, userId }) => {
         slug
       },
       {
-        $push: {
+        $addToSet: {
           upvotes: userId
         }
       },
-      error => {
+      (error, resource) => {
         if (error) reject(response);
         response.setSuccess();
         response.setMessage('Successfully upvoted');
+        response.setPayload({
+          upvote: resource.upvotes.length
+        })
         resolve(response);
       }
     );
