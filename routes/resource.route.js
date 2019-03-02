@@ -48,31 +48,49 @@ route.post('/:user/bookmark', (req, res) => {
   res.send(`code to add a new bookmark by ${req.params.user}`);
 });
 
-route.post(':resourceSlug/:userId/upvote', (req, res) => {
+route.post('/:resourceSlug/:userId/upvote', (req, res) => {
   dbHandler
     .upvote({
       slug: req.params.resourceSlug,
       userId: req.params.userId
     })
-    .then(() => {
-      res.send('Upvote successful');
+    .then(response => {
+      res.json({
+        error: false,
+        message: response.message,
+        payload: {
+          upvote: response.payload.upvote
+        }
+      });
     })
-    .catch(() => {
-      res.send('Upvote failed');
+    .catch(error => {
+      res.status(500).json({
+        error: true,
+        message: error.message
+      });
     });
 });
 
-route.post(':resourceSlug/:userId/downvote', (req, res) => {
+route.post('/:resourceSlug/:userId/downvote', (req, res) => {
   dbHandler
     .downvote({
       slug: req.params.resourceSlug,
       userId: req.params.userId
     })
-    .then(() => {
-      res.send('Downvote successful');
+    .then(response => {
+      res.json({
+        error: false,
+        message: response.message,
+        payload: {
+          count: response.payload.count
+        }
+      });
     })
-    .catch(() => {
-      res.send('Downvote failed');
+    .catch(error => {
+      res.status(500).json({
+        error: true,
+        message: error.message
+      });
     });
 });
 
