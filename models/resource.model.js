@@ -12,6 +12,11 @@ const ResourceSchema = new mongoose.Schema({
     required: 'Link is required',
     unique: 'Link exists already'
   },
+  slug: {
+    type: String,
+    required: 'Slug is required',
+    unique: 'Slug exists already'
+  },
   author: {
     id: {
       type: String,
@@ -41,6 +46,19 @@ const ResourceSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+});
+
+ResourceSchema.path('slug').set(function(value) {
+  const slug =
+    this.meta.title
+      .replace(/[^a-zA-Z0-9 ]/g, '')
+      .replace(/\s\s+/g, ' ')
+      .replace(/\s+/g, '-')
+      .toLowerCase() +
+    '-' +
+    this._id.toString().slice(0, 5);
+  console.log('this is the slug' + slug);
+  return slug;
 });
 
 module.exports = mongoose.model('Resource', ResourceSchema);

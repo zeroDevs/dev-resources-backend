@@ -22,7 +22,8 @@ resourceHandler.create = ({ link, author }) => {
           const resource = new Resource({
             link,
             meta,
-            author
+            author,
+            slug: 'slug'
           });
           resource.save(error => {
             if (error) {
@@ -201,12 +202,12 @@ resourceHandler.searchAll = searchKey => {
   });
 };
 
-resourceHandler.upvote = ({ link, userId }) => {
+resourceHandler.upvote = ({ slug, userId }) => {
   return new Promise((resolve, reject) => {
     const response = new Response();
     Resource.findOneAndUpdate(
       {
-        link: link
+        slug
       },
       {
         $push: {
@@ -223,12 +224,12 @@ resourceHandler.upvote = ({ link, userId }) => {
   });
 };
 
-resourceHandler.downvote = ({ link, userId }) => {
+resourceHandler.downvote = ({ slug, userId }) => {
   return new Promise((resolve, reject) => {
     const response = new Response();
     Resource.findOneAndUpdate(
       {
-        link: link
+        slug
       },
       {
         $push: {
