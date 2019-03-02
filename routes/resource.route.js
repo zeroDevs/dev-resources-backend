@@ -71,6 +71,23 @@ route.post('/:resourceSlug/:userId/upvote', (req, res) => {
     });
 });
 
+route.post('/:resourceSlug/:userId/tag', (req, res) => {
+  dbHandler
+    .setTag({
+      slug: req.params.resourceSlug,
+      tag: req.body.tag
+    })
+    .then(response => {
+      res.json({
+        error: false,
+        message: response.message,
+        payload: {
+          tags: response.payload.tags
+        }
+      });
+    });
+});
+
 route.post('/:resourceSlug/:userId/downvote', (req, res) => {
   dbHandler
     .downvote({
