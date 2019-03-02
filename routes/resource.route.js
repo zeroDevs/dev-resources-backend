@@ -54,11 +54,20 @@ route.post('/:resourceSlug/:userId/upvote', (req, res) => {
       slug: req.params.resourceSlug,
       userId: req.params.userId
     })
-    .then(() => {
-      res.send('Upvote successful');
+    .then(response => {
+      res.json({
+        error: false,
+        message: response.message,
+        payload: {
+          count: response.payload.count
+        }
+      });
     })
-    .catch(() => {
-      res.send('Upvote failed');
+    .catch(error => {
+      res.status(500).json({
+        error: true,
+        message: error.message
+      });
     });
 });
 
@@ -68,11 +77,20 @@ route.post('/:resourceSlug/:userId/downvote', (req, res) => {
       slug: req.params.resourceSlug,
       userId: req.params.userId
     })
-    .then(() => {
-      res.send('Downvote successful');
+    .then(response => {
+      res.json({
+        error: false,
+        message: response.message,
+        payload: {
+          count: response.payload.count
+        }
+      });
     })
-    .catch(() => {
-      res.send('Downvote failed');
+    .catch(error => {
+      res.status(500).json({
+        error: true,
+        message: error.message
+      });
     });
 });
 
