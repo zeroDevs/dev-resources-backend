@@ -48,7 +48,7 @@ route.post('/:user/bookmark', (req, res) => {
   res.send(`code to add a new bookmark by ${req.params.user}`);
 });
 
-route.post(':resourceSlug/:userId/upvote', (req, res) => {
+route.post('/:resourceSlug/:userId/upvote', (req, res) => {
   dbHandler
     .upvote({
       slug: req.params.resourceSlug,
@@ -62,7 +62,7 @@ route.post(':resourceSlug/:userId/upvote', (req, res) => {
     });
 });
 
-route.post(':resourceSlug/:userId/downvote', (req, res) => {
+route.post('/:resourceSlug/:userId/downvote', (req, res) => {
   dbHandler
     .downvote({
       slug: req.params.resourceSlug,
