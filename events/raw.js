@@ -1,3 +1,5 @@
+const Discord = require('discord.js');
+
 module.exports = async (client, event) => {
     const events = {
         MESSAGE_REACTION_ADD: 'messageReactionAdd',
