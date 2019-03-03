@@ -4,6 +4,7 @@ const DiscordStrategy = require('passport-discord').Strategy;
 const passport = require('passport');
 const session = require('express-session');
 
+const saveUser = require('./db/user.db');
 const homeRoute = require('./routes/index.route');
 const userRoute = require('./routes/user.route');
 const resourceRoute = require('./routes/resource.route');
@@ -33,7 +34,7 @@ const scopes = ['identify', 'guilds'];
 passport.use(new DiscordStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://dev-resources.herokuapp.com/user/auth/discord/callback",
+    callbackURL: "http://localhost:3000/user/auth/discord/callback",
     scope: scopes
 },
 (accessToken, refreshToken, profile, done) => {
@@ -54,6 +55,9 @@ app.use(passport.session());
 app.get('/user/auth/discord/callback', passport.authenticate('discord', {
     failureRedirect: '/'
 }), function(req, res) {
+    console.log("response ", req.user)
+    const {id, username, avatar} = req.user;
+    saveUser.create({id, username, avatar});
     res.redirect('/profile') // Successful auth
 });
 
