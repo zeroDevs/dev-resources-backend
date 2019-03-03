@@ -40,15 +40,43 @@ route.get('/all', async (req, res) => {
  */
 route.get('/:userId/bookmark', (req, res) => {
   userDbHandler.retrieveBookmarks(req.params.userId)
-  .then(response=> res.send(response.payload.bookmarks))
-  .catch(err => console.log(err.message));
+    .then(response => res.send({
+      error: false,
+      message: response.message,
+      payload: {
+        bookmarks: response.payload.bookmarks
+      }
+    }))
+    .catch(error => {
+      res.status(500).json({
+        error: true,
+        message: error.message
+      })
+    });
 });
-
 /**
  * `/:user/bookmark` is a POST route which save resources as a bookmark under that specific user.`/:user` should be replaced with user id(or username) on runtime.
  */
-route.post('/:userId/bookmark', (req, res) => {
-  res.send(`code to add a new bookmark by ${req.params.userId}`);
+route.post('/:resourceSlug/:userId/bookmark', (req, res) => {
+  userDbHandler.addBookmark({
+    userId: req.params.userId,
+    resourceSlug: req.params.resourceSlug
+  })
+    .then(response => {
+      res.json({
+        error: false,
+        message: response.message,
+        payload: {
+          bookmarksLength: response.payload.bookmark
+        }
+      })
+    })
+    .catch(error => {
+      res.status(500).json({
+        error: true,
+        message: error.message
+      });
+    });
 });
 
 route.post('/:resourceSlug/:userId/upvote', (req, res) => {
