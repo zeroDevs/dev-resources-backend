@@ -55,8 +55,8 @@ app.use(passport.session());
 app.get('/user/auth/discord/callback', passport.authenticate('discord', {
     failureRedirect: '/'
 }), function(req, res) {
-    console.log("response ", req.user)
     const {id, username, avatar} = req.user;
+    console.log(id,username, avatar)
     saveUser.create({id, username, avatar});
     res.redirect('/profile') // Successful auth
 });

@@ -29,9 +29,33 @@ UserHandler.create = ({ id, username, avatar }) => {
             })
             .catch(error => {
                 response.setMessage(error.message);
-                response.setPayload({id, username, avatar});
+                response.setPayload({ id, username, avatar });
                 reject(response);
             });
+    })
+
+}
+
+UserHandler.findBookmark = (userId) => {
+    return new Promise((resolve, reject) => {
+        const response = new Response();
+        const userObj = User.findOne({ id: userId }).exec()
+        userObj.then((user) => {
+            //resolve(user.bookmarks)
+            if (user.bookmarks) {
+                response.setSuccess();
+                response.setMessage("Bookmarks found");
+                response.setPayload({
+                    bookmarks: user.bookmarks
+                });
+                resolve(response);
+            }
+            else {
+                response.setMessage("error");
+                response.setPayload({ bookmarks: "not found" })
+                reject(response);
+            }
+        })
     })
 
 }
