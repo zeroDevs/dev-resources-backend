@@ -29,7 +29,7 @@ resourceHandler.create = ({ link, author }) => {
               .toLowerCase() +
             '-' +
             _id.toString().slice(0, 5);
-          this._id.toString().slice(0, 5);
+          //this._id.toString().slice(0, 5);
           const resource = new Resource({
             link,
             meta,

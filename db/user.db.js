@@ -36,12 +36,11 @@ UserHandler.create = ({ id, username, avatar }) => {
 
 }
 
-UserHandler.findBookmark = (userId) => {
+UserHandler.retrieveBookmarks = (userId) => {
     return new Promise((resolve, reject) => {
         const response = new Response();
         const userObj = User.findOne({ id: userId }).exec()
         userObj.then((user) => {
-            //resolve(user.bookmarks)
             if (user.bookmarks) {
                 response.setSuccess();
                 response.setMessage("Bookmarks found");
