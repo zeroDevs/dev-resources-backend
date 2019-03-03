@@ -8,11 +8,8 @@ module.exports = async (client, reaction, user) => {
 
   if (reaction.emoji.name !== process.env.RUSTY_EMOJI || user.bot) return;
 
-  //console.log("adding reaction",reaction.count);
-  if (reaction.count > 1) {
-    client.emit('messageReactionRemove', reaction, user);
-    return;
-  }
+  
+  if (reaction.count > 1) return;
 
   const message = reaction.message;
 

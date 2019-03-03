@@ -4,6 +4,7 @@ const DiscordStrategy = require('passport-discord').Strategy;
 const passport = require('passport');
 const session = require('express-session');
 
+const saveUser = require('./db/user.db');
 const homeRoute = require('./routes/index.route');
 const userRoute = require('./routes/user.route');
 const resourceRoute = require('./routes/resource.route');
@@ -54,6 +55,9 @@ app.use(passport.session());
 app.get('/user/auth/discord/callback', passport.authenticate('discord', {
     failureRedirect: '/'
 }), function(req, res) {
+    const {id, username, avatar} = req.user;
+    console.log(id,username, avatar)
+    saveUser.create({id, username, avatar});
     res.redirect('/profile') // Successful auth
 });
 
