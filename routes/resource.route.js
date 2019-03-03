@@ -4,6 +4,7 @@
  */
 const route = require('express').Router();
 const dbHandler = require('../db/resource.db');
+const userDbHandler = require('../db/user.db');
 
 /**
  * `/all` - Returns all entries available in database
@@ -37,15 +38,17 @@ route.get('/all', async (req, res) => {
 /**
  * `/:user/bookmark` is a GET route which should return only the resources user bookmarked.`/:user` should be replaced with user id(or username) on runtime.
  */
-route.get('/:user/bookmark', (req, res) => {
-  res.send(`code to send resource saved as bookmark by ${req.params.user}`);
+route.get('/:userId/bookmark', (req, res) => {
+  userDbHandler.retrieveBookmarks(req.params.userId)
+  .then(response=> res.send(response.payload.bookmarks))
+  .catch(err => console.log(err.message));
 });
 
 /**
  * `/:user/bookmark` is a POST route which save resources as a bookmark under that specific user.`/:user` should be replaced with user id(or username) on runtime.
  */
-route.post('/:user/bookmark', (req, res) => {
-  res.send(`code to add a new bookmark by ${req.params.user}`);
+route.post('/:userId/bookmark', (req, res) => {
+  res.send(`code to add a new bookmark by ${req.params.userId}`);
 });
 
 route.post('/:resourceSlug/:userId/upvote', (req, res) => {
