@@ -33,6 +33,7 @@ UserHandler.create = ({ id, username, avatar }) => {
                 reject(response);
             });
     })
+    .catch(error => console.error(error));
 
 }
 
@@ -82,6 +83,7 @@ UserHandler.retrieveBookmarks = (userId) => {
             }
         })
     })
+    .catch(error => console.error(error));
 
 }
 
