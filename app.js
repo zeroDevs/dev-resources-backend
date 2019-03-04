@@ -116,6 +116,18 @@ app.get('/logout', (req, res) => {
     res.redirect('/')
 })
 
+const fetchContrib = (repo) => {
+    return fetch(repo)
+        .then(res => res.json())
+}
+
+app.get('/contributors', async (req, res) => {
+    let frontend = await fetchContrib('https://api.github.com/repos/zeroDevs/dev-resources-frontend/contributors')
+    let backtend = await fetchContrib('https://api.github.com/repos/zeroDevs/dev-resources-backend/contributors')
+    res.send({frontend, backtend})
+})
+
+
 // not needed anymore
 function checkAuth(req, res, next) {
     console.log(req.isAuthenticated());
