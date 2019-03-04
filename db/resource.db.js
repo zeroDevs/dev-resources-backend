@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 const resourceHandler = {};
 
 resourceHandler.create = ({ link, author }) => {
+  console.log("slugggging out ", link);
   return new Promise((resolve, reject) => {
     const response = new Response();
     validator({ link, author })

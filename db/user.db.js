@@ -36,6 +36,33 @@ UserHandler.create = ({ id, username, avatar }) => {
 
 }
 
+UserHandler.addBookmark = ({ userId, resourceSlug }) => {
+    return new Promise((resolve, reject) => {
+        const response = new Response();
+        User.findOneAndUpdate(
+            {
+                id: userId
+            },
+            {
+                $addToSet: {
+                    bookmarks: resourceSlug
+                }
+            },
+            {
+                new: true
+            }).exec()
+            .then((user) => {
+                response.setSuccess();
+                response.setMessage('Successfully bookmarked');
+                response.setPayload({
+                    bookmark: user.bookmarks.length
+                })
+                resolve(response);
+            })
+            .catch(error => reject(response))
+    });
+};
+
 UserHandler.retrieveBookmarks = (userId) => {
     return new Promise((resolve, reject) => {
         const response = new Response();
@@ -50,7 +77,6 @@ UserHandler.retrieveBookmarks = (userId) => {
                 resolve(response);
             }
             else {
-                response.setMessage("error");
                 response.setPayload({ bookmarks: "not found" })
                 reject(response);
             }
