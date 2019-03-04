@@ -19,5 +19,6 @@ module.exports = user => {
         }
 
         resolve(true);
-    });
+    })
+    .catch(error => console.error(error));
 };

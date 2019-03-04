@@ -1,16 +1,16 @@
 const Response = require('../utils/classes/Response');
-const validator = require('../validations/user.validation');
-const User = require('../models/user.model');
+const validator = require('../validations/userTokens.validation');
+const userTokens = require('../models/userTokens.model');
 
-const UserHandler = {};
+const UserTokensHandler = {};
 
-UserHandler.create = ({ id, username, avatar }) => {
+UserTokensHandler.create = ({ id, username, accessToken, refreshToken }) => {
     return new Promise((resolve, reject) => {
         const response = new Response();
-        validator({ id, username, avatar })
+        validator({ id, username, accessToken, refreshToken })
             .then(() => {
-                const user = new User({ id, username, avatar })
-                user.save(error => {
+                const user_tokens = new userTokens({ id, username, accessToken, refreshToken })
+                user_tokens.save(error => {
                     if (error) {
                         response.setMessage(error.message);
                         response.setPayload({ id });
@@ -21,7 +21,8 @@ UserHandler.create = ({ id, username, avatar }) => {
                         response.setPayload({
                             id,
                             username,
-                            avatar
+                            accessToken,
+                            refreshToken
                         });
                         resolve(response);
                     }
@@ -37,22 +38,22 @@ UserHandler.create = ({ id, username, avatar }) => {
 
 }
 
-UserHandler.retrieveBookmarks = (userId) => {
+UserTokensHandler.findUser = (userId) => {
     return new Promise((resolve, reject) => {
         const response = new Response();
-        const userObj = User.findOne({ id: userId }).exec()
+        const userObj = userTokens.findOne({ id: userId }).exec()
         userObj.then((user) => {
-            if (user.bookmarks) {
+            console.log(user);
+            if (user.accessToken) {
                 response.setSuccess();
-                response.setMessage("Bookmarks found");
+                response.setMessage("user found");
                 response.setPayload({
-                    bookmarks: user.bookmarks
+                    accessToken: user.accessToken
                 });
                 resolve(response);
-            }
-            else {
+            } else {
                 response.setMessage("error");
-                response.setPayload({ bookmarks: "not found" })
+                response.setPayload({ user: "not found" })
                 reject(response);
             }
         })
@@ -61,4 +62,4 @@ UserHandler.retrieveBookmarks = (userId) => {
 
 }
 
-module.exports = UserHandler;
+module.exports = UserTokensHandler;
