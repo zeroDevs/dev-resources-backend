@@ -213,18 +213,24 @@ resourceHandler.searchAll = searchKey => {
   });
 };
 
-resourceHandler.upvote = ({ slug, userId }) => {
+resourceHandler.upvote = ({ slug, userId, upvote }) => {
   return new Promise((resolve, reject) => {
     const response = new Response();
     Resource.findOneAndUpdate(
       {
         slug
       },
-      {
-        $addToSet: {
-          upvotes: userId
-        }
-      },
+      upvote
+        ? {
+            $addToSet: {
+              upvotes: userId
+            }
+          }
+        : {
+            $pull: {
+              upvotes: userId
+            }
+          },
       (error, resource) => {
         if (error) reject(response);
         response.setSuccess();
