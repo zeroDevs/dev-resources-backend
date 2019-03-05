@@ -83,7 +83,8 @@ route.post('/:resourceSlug/:userId/upvote', (req, res) => {
   dbHandler
     .upvote({
       slug: req.params.resourceSlug,
-      userId: req.params.userId
+      userId: req.params.userId,
+      upvote: req.body.isUpvote
     })
     .then(response => {
       res.json({

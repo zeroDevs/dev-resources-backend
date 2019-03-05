@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 const resourceHandler = {};
 
 resourceHandler.create = ({ link, author }) => {
-  console.log("slugggging out ", link);
+  console.log('slugggging out ', link);
   return new Promise((resolve, reject) => {
     const response = new Response();
     validator({ link, author })
@@ -214,25 +214,31 @@ resourceHandler.searchAll = searchKey => {
   });
 };
 
-resourceHandler.upvote = ({ slug, userId }) => {
+resourceHandler.upvote = ({ slug, userId, upvote }) => {
   return new Promise((resolve, reject) => {
     const response = new Response();
     Resource.findOneAndUpdate(
       {
         slug
       },
-      {
-        $addToSet: {
-          upvotes: userId
-        }
-      },
+      upvote
+        ? {
+            $addToSet: {
+              upvotes: userId
+            }
+          }
+        : {
+            $pull: {
+              upvotes: userId
+            }
+          },
       (error, resource) => {
         if (error) reject(response);
         response.setSuccess();
         response.setMessage('Successfully upvoted');
         response.setPayload({
           upvote: resource.upvotes.length
-        })
+        });
         resolve(response);
       }
     );
