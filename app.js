@@ -7,6 +7,8 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const fetch = require('node-fetch');
 const bodyParser = require('body-parser')
+const CronJob = require('cron').CronJob;
+var fs = require('fs');
 
 const saveUser = require('./db/user.db');
 const saveTokens = require('./db/userTokens.db');
@@ -14,14 +16,36 @@ const homeRoute = require('./routes/index.route');
 const userRoute = require('./routes/user.route');
 const resourceRoute = require('./routes/resource.route');
 
+new CronJob('0 */10 * * * *', async function () {
+
+    fetch('https://api.github.com/repos/zeroDevs/dev-resources-frontend/contributors')
+    .then(res => res.json())
+    .then(json =>
+        fs.writeFile('contributors-frontend.json', JSON.stringify(json), function (err) {
+            if (err) throw err;
+            console.log('Saved Contributors - Frontend!');
+        })
+    )
+
+    fetch('https://api.github.com/repos/zeroDevs/dev-resources-backend/contributors')
+    .then(res => res.json())
+    .then(json =>
+        fs.writeFile('contributors-backend.json', JSON.stringify(json), function (err) {
+            if (err) throw err;
+            console.log('Saved Contributors - Backend!');
+        })
+    )
+
+}, null, true, 'America/Los_Angeles');
+
 const app = express();
 const port = process.env.PORT || 3001;
 
-passport.serializeUser(function(user, done) {
-  done(null, user);
+passport.serializeUser(function (user, done) {
+    done(null, user);
 });
-passport.deserializeUser(function(obj, done) {
-  done(null, obj);
+passport.deserializeUser(function (obj, done) {
+    done(null, obj);
 });
 
 app.use(express.json());
@@ -34,7 +58,7 @@ app.use('/resource', resourceRoute);
 
 const scopes = ['identify', 'guilds'];
 
-// "https://dev-resources.herokuapp.com/user/auth/discord/callback"
+
 
 passport.use(new DiscordStrategy({
     clientID: process.env.CLIENT_ID,
@@ -42,15 +66,15 @@ passport.use(new DiscordStrategy({
     callbackURL: "https://dev-resources.herokuapp.com/user/auth/discord/callback",
     scope: scopes
 },
-(accessToken, refreshToken, profile, done) => {
-    process.nextTick(function() {
-        console.log('secrets', accessToken, refreshToken);
-        console.log(profile);
-        const { id, username } = profile;
-        saveTokens.create({id, username, accessToken, refreshToken});
-        return done(null, profile);
-    });
-}));
+    (accessToken, refreshToken, profile, done) => {
+        process.nextTick(function () {
+            console.log('secrets', accessToken, refreshToken);
+            console.log(profile);
+            const { id, username } = profile;
+            saveTokens.create({ id, username, accessToken, refreshToken });
+            return done(null, profile);
+        });
+    }));
 
 app.use(session({
     secret: 'super batman',
@@ -67,14 +91,14 @@ const tHash = (aToken) => {
 
 app.get('/user/auth/discord/callback', passport.authenticate('discord', {
     failureRedirect: '/'
-}), function(req, res) {
+}), function (req, res) {
     console.log('cb start', req.query.code);
-    const {id, username, avatar, accessToken} = req.user;
+    const { id, username, avatar, accessToken } = req.user;
 
-    bcrypt.genSalt(saltRounds, function(err, salt) {
-        bcrypt.hash(accessToken, salt, function(err, hash) {
-            console.log(id,username, avatar)
-            saveUser.create({id, username, avatar});
+    bcrypt.genSalt(saltRounds, function (err, salt) {
+        bcrypt.hash(accessToken, salt, function (err, hash) {
+            console.log(id, username, avatar)
+            saveUser.create({ id, username, avatar });
 
             res.redirect(`https://rustyresources.herokuapp.com/dashboard?uid=${id}&val=${hash}`); // Successful auth
         });
@@ -94,20 +118,20 @@ app.post('/profile', (req, res) => {
     console.log(req.body.id);
     console.log(typeof id);
     saveTokens.findUser(id)
-    .then(response=> {
-        let act = response.payload.accessToken;
-        bcrypt.compare(act, req.body.hoken, function(err, response) {
-            if(response) {
-                fetch('https://discordapp.com/api/users/@me', {
-                    method: 'get',
-                    headers: {'Authorization': `Bearer ${act}` }
-                })
-                .then(res => res.json())
-                .then(json => {res.json(json)});
-            }
-        });
-    })
-    .catch(err => console.log(err.message));
+        .then(response => {
+            let act = response.payload.accessToken;
+            bcrypt.compare(act, req.body.hoken, function (err, response) {
+                if (response) {
+                    fetch('https://discordapp.com/api/users/@me', {
+                        method: 'get',
+                        headers: { 'Authorization': `Bearer ${act}` }
+                    })
+                        .then(res => res.json())
+                        .then(json => { res.json(json) });
+                }
+            });
+        })
+        .catch(err => console.log(err.message));
 
 })
 
@@ -116,13 +140,25 @@ app.get('/logout', (req, res) => {
     res.redirect('/')
 })
 
+// const fetchContrib = (repo) => {
+//     return fetch(repo)
+//         .then(res => res.json())
+// }
+
+app.get('/contributors', async (req, res) => {
+    const front = require('./contributors-frontend.json')
+    const back = require('./contributors-backend.json')
+    res.json({ front, back })
+})
+
+
 // not needed anymore
 function checkAuth(req, res, next) {
     console.log(req.isAuthenticated());
     if (req.isAuthenticated()) return next();
-    res.json({error: 'notLoggedIn', status: res.statusCode});
+    res.json({ error: 'notLoggedIn', status: res.statusCode });
 }
 
-app.listen(port, function() {
-  console.log('Our app is running on port:' + port);
+app.listen(port, function () {
+    console.log('Our app is running on port:' + port);
 });
