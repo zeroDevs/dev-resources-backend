@@ -63,13 +63,23 @@ const scopes = ['identify', 'guilds'];
 passport.use(new DiscordStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://dev-resources.herokuapp.com/user/auth/discord/callback",
+    callbackURL: "http://dev-resources.herokuapp.com/user/auth/discord/callback",
     scope: scopes
 },
     (accessToken, refreshToken, profile, done) => {
         process.nextTick(function () {
-            console.log('secrets', accessToken, refreshToken);
             console.log(profile);
+
+            saveUser.addGuild({
+                  userId: profile.id,
+                  guilds: profile.guilds
+                })
+                  .then(response => {
+                    console.log(response);
+                  })
+                  .catch(error => {
+                    console.error(error);
+                  });
             const { id, username } = profile;
             saveTokens.create({ id, username, accessToken, refreshToken });
             return done(null, profile);
@@ -92,13 +102,12 @@ const tHash = (aToken) => {
 app.get('/user/auth/discord/callback', passport.authenticate('discord', {
     failureRedirect: '/'
 }), function (req, res) {
-    console.log('cb start', req.query.code);
-    const { id, username, avatar, accessToken } = req.user;
+    const { id, username, avatar, accessToken, discriminator } = req.user;
 
     bcrypt.genSalt(saltRounds, function (err, salt) {
         bcrypt.hash(accessToken, salt, function (err, hash) {
-            console.log(id, username, avatar)
-            saveUser.create({ id, username, avatar });
+            console.log(id, username, avatar, discriminator);
+            saveUser.create({ id, username, avatar, discriminator });
 
             res.redirect(`https://rustyresources.herokuapp.com/dashboard?uid=${id}&val=${hash}`); // Successful auth
         });
@@ -122,12 +131,18 @@ app.post('/profile', (req, res) => {
             let act = response.payload.accessToken;
             bcrypt.compare(act, req.body.hoken, function (err, response) {
                 if (response) {
-                    fetch('https://discordapp.com/api/users/@me', {
-                        method: 'get',
-                        headers: { 'Authorization': `Bearer ${act}` }
-                    })
-                        .then(res => res.json())
-                        .then(json => { res.json(json) });
+                    saveUser.retrieveUser(id)
+                      .then(response => {
+                          res.json({
+                                payload: response.payload
+                              })
+                          })
+                          .catch(error => {
+                            res.status(500).json({
+                              error: true,
+                              message: error.message
+                            })
+                          });
                 }
             });
         })

@@ -18,6 +18,10 @@ module.exports = user => {
             reject(new ValidationError('The avatar is not valid'));
         }
 
+        if (!user.discriminator || typeof user.discriminator !== 'string') {
+            reject(new ValidationError('Discriminator is not valid'));
+        }
+
         resolve(true);
     })
     .catch(error => console.error(error));
