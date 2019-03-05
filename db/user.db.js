@@ -4,12 +4,12 @@ const User = require('../models/user.model');
 
 const UserHandler = {};
 
-UserHandler.create = ({ id, username, avatar }) => {
+UserHandler.create = ({ id, username, avatar, discriminator }) => {
     return new Promise((resolve, reject) => {
         const response = new Response();
-        validator({ id, username, avatar })
+        validator({ id, username, avatar, discriminator })
             .then(() => {
-                const user = new User({ id, username, avatar })
+                const user = new User({ id, username, avatar, discriminator })
                 user.save(error => {
                     if (error) {
                         response.setMessage(error.message);
@@ -21,7 +21,8 @@ UserHandler.create = ({ id, username, avatar }) => {
                         response.setPayload({
                             id,
                             username,
-                            avatar
+                            avatar,
+                            discriminator
                         });
                         resolve(response);
                     }
@@ -29,7 +30,7 @@ UserHandler.create = ({ id, username, avatar }) => {
             })
             .catch(error => {
                 response.setMessage(error.message);
-                response.setPayload({ id, username, avatar });
+                response.setPayload({ id, username, avatar, discriminator });
                 reject(response);
             });
     })
@@ -85,6 +86,60 @@ UserHandler.retrieveBookmarks = (userId) => {
     })
     .catch(error => console.error(error));
 
-}
+};
+
+UserHandler.addGuild = ({ userId, guilds }) => {
+    return new Promise((resolve, reject) => {
+        const response = new Response();
+        User.findOneAndUpdate(
+            {
+                id: userId
+            },
+            {
+                $addToSet: {
+                    guilds: guilds
+                }
+            },
+            {
+                new: true
+            }).exec()
+            .then((user) => {
+                response.setSuccess();
+                response.setMessage('Successfully bookmarked');
+                response.setPayload({
+                    guilds: user.guilds.length
+                })
+                resolve(response);
+            })
+            .catch(error => reject(response))
+    });
+};
+
+UserHandler.retrieveUser = (userId) => {
+    return new Promise((resolve, reject) => {
+        const response = new Response();
+        const userObj = User.findOne({ id: userId }).exec()
+        userObj.then((user) => {
+            if (user) {
+                response.setSuccess();
+                response.setMessage("User found");
+                response.setPayload({
+                    id: user.id,
+                    username: user.username,
+                    avatar: user.avatar,
+                    discriminator: user.discriminator,
+                    guilds: user.guilds
+                });
+                resolve(response);
+            }
+            else {
+                response.setPayload({ user: "not found" })
+                reject(response);
+            }
+        })
+    })
+    .catch(error => console.error(error));
+
+};
 
 module.exports = UserHandler;

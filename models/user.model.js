@@ -15,8 +15,15 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    discriminator: {
+        type: String,
+        default: ""
+    },
     bookmarks: {
         type: Array,
+    },
+    guilds: {
+        type: Array
     },
     createdAt: {
         type: Date,
