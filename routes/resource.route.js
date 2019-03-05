@@ -5,7 +5,7 @@
 const route = require('express').Router();
 const dbHandler = require('../db/resource.db');
 const userDbHandler = require('../db/user.db');
-const allTopics = require('../controller/allReads');
+//const allRelatedResource = require('../controller/allRelatedResource');
 
 /**
  * `/all` - Returns all entries available in database
@@ -14,7 +14,9 @@ route.get('/all', async (req, res) => {
   const data = await dbHandler.readAll();
   console.log(data.error, data.message);
 
-  allTopics("The React Handbook – freeCodeCamp.org");
+  //const relatedResource = allRelatedResource("How JavaScript works: an overview of the engine, the runtime, and the call stack");
+  //console.log(relatedResource.then(v => console.log(v)));
+
   if (data.error) res.send('Something went wrong, try again later!');
   else {
     let prefixedData = {};

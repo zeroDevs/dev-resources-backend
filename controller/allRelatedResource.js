@@ -2,25 +2,33 @@ const dbhandler = require('../db/resource.db');
 const escp = require('../utils').escapeString;
 const stopword = require('stopword');
 
-const allReads = async (currentArticle) => {
-    const x = await dbhandler.readAll();
-    let allTopicArr = x.payload.resources.map(e =>
-        stopword.removeStopwords(escp(e.meta.title).toUpperCase().split(/\s+/))
+/*function to get all related resource based on the algorithm on this site 
+http://www.catalysoft.com/articles/StrikeAMatch.html*/
+
+const allRelatedResource = async (currentArticle) => {
+    const allResources = await dbhandler.readAll();
+
+    let allTitlesArr = allResources.payload.resources.map(resource =>
+        /*get non noise words from all articles in DB and their meta titles*/
+        [stopword.removeStopwords(escp(resource.meta.title).toUpperCase().split(/\s+/)), 
+        resource.meta.title]
     );
 
+    /*get non noise words from the currently read article*/
     currentArticleWords = stopword.removeStopwords(escp(currentArticle).toUpperCase().split(/\s+/));
-    //console.log("input", currentArticleWords);
-
-    const relatedFigures = allTopicArr.filter((topic) => {
-        let figure = compareArticles(currentArticleWords, topic)
+    
+    /*get the relativity value between 0 to 1*/
+    const relatedFigures = allTitlesArr.filter((title) => {
+        let figure = compareArticles(currentArticleWords, title[0])
         if (figure >= 0.4 && figure < 1)
-            return topic.join(' ');
+            return title;
     })
 
-    //let allTopics = wordLetterPairs(currentArticleWords)
-    console.log(relatedFigures);
+    /*return the actual title names*/
+    return relatedFigures.map(title => title[1]);
 }
 
+/*pair adjacent letters in word*/
 const letterPairs = (word) => {
     let len = word.length - 1;
     let pairs = [];
@@ -36,15 +44,11 @@ const wordLetterPairs = (articleWords) => {
     // For each word
     for (let l = 0; l < articleWords.length; l++) {
         // Find the pairs of characters
-        //console.log("test", articleWords[l]);
         let pairsInWord = letterPairs(articleWords[l]);
-        //for (let p = 0; p < pairsInWord.length; p++) {
         allPairs = [...allPairs, ...pairsInWord];
-        //}
     }
 
     return allPairs;
-
 }
 
 const compareArticles = (currentArticle, dbArticle) => {
@@ -82,4 +86,4 @@ return (2.0 * intersection) / union;
 }
 
 
-module.exports = allReads;
+module.exports = allRelatedResource;
