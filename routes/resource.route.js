@@ -14,7 +14,7 @@ route.get('/all', async (req, res) => {
   const data = await dbHandler.readAll();
   console.log(data.error, data.message);
 
-  allTopics();
+  allTopics("The React Handbook – freeCodeCamp.org");
   if (data.error) res.send('Something went wrong, try again later!');
   else {
     let prefixedData = {};
