@@ -39,7 +39,7 @@ const scopes = ['identify', 'guilds'];
 passport.use(new DiscordStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://dev-resources.herokuapp.com/user/auth/discord/callback",
+    callbackURL: "http://localhost:3001/user/auth/discord/callback",
     scope: scopes
 },
 (accessToken, refreshToken, profile, done) => {

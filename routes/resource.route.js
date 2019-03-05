@@ -5,6 +5,7 @@
 const route = require('express').Router();
 const dbHandler = require('../db/resource.db');
 const userDbHandler = require('../db/user.db');
+const allTopics = require('../controller/allReads');
 
 /**
  * `/all` - Returns all entries available in database
@@ -13,10 +14,11 @@ route.get('/all', async (req, res) => {
   const data = await dbHandler.readAll();
   console.log(data.error, data.message);
 
+  allTopics();
   if (data.error) res.send('Something went wrong, try again later!');
   else {
     let prefixedData = {};
-    data.payload.resources.forEach(e => {
+    data.payload.resources.forEach(e=> {
       if (!e.meta.title) e.meta.title = 'No Title Was Set';
       const id = e._id;
       // Remove all non-alphanumerics
