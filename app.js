@@ -58,8 +58,6 @@ app.use('/resource', resourceRoute);
 
 const scopes = ['identify', 'guilds'];
 
-
-
 passport.use(new DiscordStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
@@ -94,10 +92,6 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-const tHash = (aToken) => {
-
-}
 
 app.get('/user/auth/discord/callback', passport.authenticate('discord', {
     failureRedirect: '/'
@@ -147,7 +141,6 @@ app.post('/profile', (req, res) => {
             });
         })
         .catch(err => console.log(err.message));
-
 })
 
 app.get('/logout', (req, res) => {
