@@ -15,27 +15,13 @@ const saveTokens = require('./db/userTokens.db');
 const homeRoute = require('./routes/index.route');
 const userRoute = require('./routes/user.route');
 const resourceRoute = require('./routes/resource.route');
+const statseRoute = require('./routes/stats.route');
+const contribRoute = require('./routes/contributors.route');
+
+const getContribs = require('./utils/getContribs');
 
 new CronJob('0 */10 * * * *', async function () {
-
-    fetch('https://api.github.com/repos/zeroDevs/dev-resources-frontend/contributors')
-    .then(res => res.json())
-    .then(json =>
-        fs.writeFile('contributors-frontend.json', JSON.stringify(json), function (err) {
-            if (err) throw err;
-            console.log('Saved Contributors - Frontend!');
-        })
-    )
-
-    fetch('https://api.github.com/repos/zeroDevs/dev-resources-backend/contributors')
-    .then(res => res.json())
-    .then(json =>
-        fs.writeFile('contributors-backend.json', JSON.stringify(json), function (err) {
-            if (err) throw err;
-            console.log('Saved Contributors - Backend!');
-        })
-    )
-
+    getContribs()
 }, null, true, 'America/Los_Angeles');
 
 const app = express();
@@ -55,6 +41,8 @@ app.use(cors());
 app.use('/', homeRoute);
 app.use('/user', userRoute);
 app.use('/resource', resourceRoute);
+app.use('/stats', statseRoute)
+app.use('/contributors', contribRoute)
 
 const scopes = ['identify', 'guilds'];
 
