@@ -8,34 +8,19 @@ const saltRounds = 10;
 const fetch = require('node-fetch');
 const bodyParser = require('body-parser')
 const CronJob = require('cron').CronJob;
-var fs = require('fs');
 
 const saveUser = require('./db/user.db');
 const saveTokens = require('./db/userTokens.db');
 const homeRoute = require('./routes/index.route');
 const userRoute = require('./routes/user.route');
 const resourceRoute = require('./routes/resource.route');
+const statseRoute = require('./routes/stats.route');
+const contribRoute = require('./routes/contributors.route');
+
+const getContribs = require('./utils/getContribs');
 
 new CronJob('0 */10 * * * *', async function () {
-
-    fetch('https://api.github.com/repos/zeroDevs/dev-resources-frontend/contributors')
-    .then(res => res.json())
-    .then(json =>
-        fs.writeFile('contributors-frontend.json', JSON.stringify(json), function (err) {
-            if (err) throw err;
-            console.log('Saved Contributors - Frontend!');
-        })
-    )
-
-    fetch('https://api.github.com/repos/zeroDevs/dev-resources-backend/contributors')
-    .then(res => res.json())
-    .then(json =>
-        fs.writeFile('contributors-backend.json', JSON.stringify(json), function (err) {
-            if (err) throw err;
-            console.log('Saved Contributors - Backend!');
-        })
-    )
-
+    getContribs()
 }, null, true, 'America/Los_Angeles');
 
 const app = express();
@@ -55,6 +40,8 @@ app.use(cors());
 app.use('/', homeRoute);
 app.use('/user', userRoute);
 app.use('/resource', resourceRoute);
+app.use('/stats', statseRoute)
+app.use('/contributors', contribRoute)
 
 const scopes = ['identify', 'guilds'];
 
@@ -148,24 +135,8 @@ app.get('/logout', (req, res) => {
     res.redirect('/')
 })
 
-// const fetchContrib = (repo) => {
-//     return fetch(repo)
-//         .then(res => res.json())
-// }
-
-app.get('/contributors', async (req, res) => {
-    const front = require('./contributors-frontend.json')
-    const back = require('./contributors-backend.json')
-    res.json({ front, back })
-})
 
 
-// not needed anymore
-function checkAuth(req, res, next) {
-    console.log(req.isAuthenticated());
-    if (req.isAuthenticated()) return next();
-    res.json({ error: 'notLoggedIn', status: res.statusCode });
-}
 
 app.listen(port, function () {
     console.log('Our app is running on port:' + port);
