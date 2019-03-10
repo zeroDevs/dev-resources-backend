@@ -80,10 +80,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-const tHash = (aToken) => {
-
-}
-
 app.get('/user/auth/discord/callback', passport.authenticate('discord', {
     failureRedirect: '/'
 }), function (req, res) {
@@ -132,7 +128,6 @@ app.post('/profile', (req, res) => {
             });
         })
         .catch(err => console.log(err.message));
-
 })
 
 app.get('/logout', (req, res) => {
