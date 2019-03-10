@@ -45,6 +45,13 @@ app.use('/contributors', contribRoute)
 
 const scopes = ['identify', 'guilds'];
 
+// not needed anymore
+function checkAuth(req, res, next) {
+    console.log(req.isAuthenticated());
+    if (req.isAuthenticated()) return next();
+    res.json({ error: 'notLoggedIn', status: res.statusCode });
+}
+
 passport.use(new DiscordStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
