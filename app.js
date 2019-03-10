@@ -8,7 +8,6 @@ const saltRounds = 10;
 const fetch = require('node-fetch');
 const bodyParser = require('body-parser')
 const CronJob = require('cron').CronJob;
-var fs = require('fs');
 
 const saveUser = require('./db/user.db');
 const saveTokens = require('./db/userTokens.db');
@@ -45,8 +44,6 @@ app.use('/stats', statseRoute)
 app.use('/contributors', contribRoute)
 
 const scopes = ['identify', 'guilds'];
-
-
 
 passport.use(new DiscordStrategy({
     clientID: process.env.CLIENT_ID,
@@ -143,24 +140,8 @@ app.get('/logout', (req, res) => {
     res.redirect('/')
 })
 
-// const fetchContrib = (repo) => {
-//     return fetch(repo)
-//         .then(res => res.json())
-// }
-
-app.get('/contributors', async (req, res) => {
-    const front = require('./contributors-frontend.json')
-    const back = require('./contributors-backend.json')
-    res.json({ front, back })
-})
 
 
-// not needed anymore
-function checkAuth(req, res, next) {
-    console.log(req.isAuthenticated());
-    if (req.isAuthenticated()) return next();
-    res.json({ error: 'notLoggedIn', status: res.statusCode });
-}
 
 app.listen(port, function () {
     console.log('Our app is running on port:' + port);
