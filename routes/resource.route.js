@@ -11,61 +11,63 @@ const userDbHandler = require('../db/user.db');
  * `/all` - Returns all entries available in database
  */
 route.get('/all', async (req, res) => {
-  const data = await dbHandler.readAll();
-  console.log(data.error, data.message);
-
-  //const relatedResource = allRelatedResource("How JavaScript works: an overview of the engine, the runtime, and the call stack");
-  //console.log(relatedResource.then(v => console.log(v)));
-
-  if (data.error) res.send('Something went wrong, try again later!');
-  else {
-    let prefixedData = {};
-    data.payload.resources.forEach(e=> {
-      if (!e.meta.title) e.meta.title = 'No Title Was Set';
-      const id = e._id;
-      // Remove all non-alphanumerics
-      const stripSpecials = e.meta.title.replace(/[^a-zA-Z0-9 ]/g, '');
-      // Remove Duplicate space
-      const stripSpaces = stripSpecials.replace(/\s\s+/g, ' ');
-      //  Replace spaces with hyphens and convert to lowercase
-      const prefix =
-        stripSpaces.replace(/\s+/g, '-').toLowerCase() +
-        '-' +
-        id.toString().slice(0, 5);
-
-      prefixedData[prefix] = e;
-    });
-    res.json(prefixedData);
+  try {
+    const data = await dbHandler.readAll();
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ message: 'Something went wrong. Please try again later' });
   }
+  if (data.error) return res.status(500).json(data);
+  res.json(data);
+});
+
+route.get('/', async (req, res) => {
+  try {
+    const data = await dbHandler.read({
+      pageNumber: Number.parseInt(req.query.page),
+      limit: Number.parseInt(req.query.limit)
+    });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ message: 'Something went wrong. Please try again later' });
+  }
+  if (data.error) return res.status(500).json(data);
+  res.json(data);
 });
 
 /**
  * `/:user/bookmark` is a GET route which should return only the resources user bookmarked.`/:user` should be replaced with user id(or username) on runtime.
  */
 route.get('/:userId/bookmark', (req, res) => {
-  userDbHandler.retrieveBookmarks(req.params.userId)
-    .then(response => res.send({
-      error: false,
-      message: response.message,
-      payload: {
-        bookmarks: response.payload.bookmarks
-      }
-    }))
+  userDbHandler
+    .retrieveBookmarks(req.params.userId)
+    .then(response =>
+      res.send({
+        error: false,
+        message: response.message,
+        payload: {
+          bookmarks: response.payload.bookmarks
+        }
+      })
+    )
     .catch(error => {
       res.status(500).json({
         error: true,
         message: error.message
-      })
+      });
     });
 });
 /**
  * `/:user/bookmark` is a POST route which save resources as a bookmark under that specific user.`/:user` should be replaced with user id(or username) on runtime.
  */
 route.post('/:resourceSlug/:userId/bookmark', (req, res) => {
-  userDbHandler.addBookmark({
-    userId: req.params.userId,
-    resourceSlug: req.params.resourceSlug
-  })
+  userDbHandler
+    .addBookmark({
+      userId: req.params.userId,
+      resourceSlug: req.params.resourceSlug
+    })
     .then(response => {
       res.json({
         error: false,
@@ -73,7 +75,7 @@ route.post('/:resourceSlug/:userId/bookmark', (req, res) => {
         payload: {
           bookmarksLength: response.payload.bookmark
         }
-      })
+      });
     })
     .catch(error => {
       res.status(500).json({
