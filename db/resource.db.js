@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 const resourceHandler = {};
 
 resourceHandler.create = ({ link, author }) => {
+  console.log('slugggging out ', link);
   return new Promise((resolve, reject) => {
     const response = new Response();
     validator({ link, author })
@@ -29,7 +30,7 @@ resourceHandler.create = ({ link, author }) => {
               .toLowerCase() +
             '-' +
             _id.toString().slice(0, 5);
-          this._id.toString().slice(0, 5);
+          //this._id.toString().slice(0, 5);
           const resource = new Resource({
             link,
             meta,
@@ -213,18 +214,24 @@ resourceHandler.searchAll = searchKey => {
   });
 };
 
-resourceHandler.upvote = ({ slug, userId }) => {
+resourceHandler.upvote = ({ slug, userId, upvote }) => {
   return new Promise((resolve, reject) => {
     const response = new Response();
     Resource.findOneAndUpdate(
       {
         slug
       },
-      {
-        $addToSet: {
-          upvotes: userId
-        }
-      },
+      upvote
+        ? {
+            $addToSet: {
+              upvotes: userId
+            }
+          }
+        : {
+            $pull: {
+              upvotes: userId
+            }
+          },
       (error, resource) => {
         if (error) reject(response);
         response.setSuccess();
@@ -285,7 +292,7 @@ resourceHandler.downvote = ({ slug, userId }) => {
   });
 };
 
-resourceHandler.resourceCount = () => {
+resourceHandler.count = () => {
   return new Promise((resolve, reject) => {
     const response = new Response();
     Resource.count({}, (error, count) => {
@@ -300,7 +307,7 @@ resourceHandler.resourceCount = () => {
   });
 };
 
-resourceHandler.votesCount = () => {
+resourceHandler.stats = () => {
   return new Promise((resolve, reject) => {
     const response = new Response();
     Resource.find({}, (error, resources) => {
@@ -308,15 +315,43 @@ resourceHandler.votesCount = () => {
       let payload = resources.reduce(
         (acc, resource) => {
           acc.upvotesCount += resource.upvotes.length;
-          acc.downvotesCount += resourc.upvotes.length;
+          if (Date.now() - new Date(resource.createdAt).getTime() < 86400000)
+            acc.today++;
+          if (Date.now() - new Date(resource.createdAt).getTime() < 604800000)
+            acc.thisWeek++;
+          if (Date.now() - new Date(resource.createdAt).getTime() < 2592000000)
+            acc.thisMonth++;
+          if (Date.now() - new Date(resource.createdAt).getTime() < 31536000000)
+            acc.thisYear++;
+          if (/freecodecamp.org/.test(resource.link)) acc.freecodecamp++;
+          if (/youtube.com\/watch/.test(resource.link)) acc.youtube++;
+          if (/medium/.test(resource.link)) acc.medium++;
+          acc.users[resource.author.id] = acc.users[resource.author.id]
+            ? acc.users[resource.author.id]
+            : {};
+          acc.users[resource.author.id].username = resource.author.username;
+          acc.users[resource.author.id].count = acc.users[resource.author.id]
+            .count
+            ? acc.users[resource.author.id].count + 1
+            : 1;
           return acc;
         },
-        { upvotesCount: 0, downvotesCount: 0 }
+        {
+          upvotesCount: 0,
+          today: 0,
+          thisWeek: 0,
+          thisMonth: 0,
+          thisYear: 0,
+          medium: 0,
+          youtube: 0,
+          freecodecamp: 0,
+          users: {}
+        }
       );
       response.setSuccess();
-      response.setMessage('Votes count operation was successful');
+      response.setMessage('Stats operation was successful');
       response.setPayload(payload);
-      resolve(respone);
+      resolve(response);
     });
   });
 };

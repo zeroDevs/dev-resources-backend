@@ -30,6 +30,7 @@ module.exports = (client, message) => {
             })
         )
         .then(responses => {
+            message.delete(1000);
             responses.forEach(response => {
                 channel.send({
                     embed: {
@@ -70,8 +71,10 @@ module.exports = (client, message) => {
     }
     else {
         message.delete()
-        //.then((msg) => console.log(msg) )
-        //.catch(err => console.log("couldn't delete the message "+ err.msg))
+        .then((msg) => {
+            msg.author.send(`Please do not send a message that is not a resource to the ${channel.name} channel`);
+        })
+        .catch(err => console.log("couldn't delete the message "+ err.msg))
     }
     
     // For the inital release version, this will do the job. We should eventually look at removing the original message
