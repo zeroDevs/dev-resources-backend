@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const saveUser = require('../db/user.db');
 const userDbHandler = require('../db/user.db');
 
+const saltRounds = 10;
+
 /**
  * `/auth` should authenticating user
  * `/` should register a new user
