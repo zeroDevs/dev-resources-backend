@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
-const saveTokens = require('./db/userTokens.db');
-const saveUser = require('./db/user.db');
+const saveTokens = require('../db/userTokens.db');
+const saveUser = require(',./db/user.db');
 
 router
   .route('/')

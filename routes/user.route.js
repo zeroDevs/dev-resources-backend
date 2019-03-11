@@ -1,7 +1,7 @@
 const route = require('express').Router();
 const passport = require('passport');
 const bcrypt = require('bcrypt');
-const saveUser = require('./db/user.db');
+const saveUser = require('../db/user.db');
 const userDbHandler = require('../db/user.db');
 
 /**
