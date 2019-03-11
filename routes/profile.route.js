@@ -1,7 +1,13 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const saveTokens = require('../db/userTokens.db');
-const saveUser = require(',./db/user.db');
+const saveUser = require('../db/user.db');
+
+function checkAuth(req, res, next) {
+  console.log(req.isAuthenticated());
+  if (req.isAuthenticated()) return next();
+  res.json({ error: 'notLoggedIn', status: res.statusCode });
+}
 
 router
   .route('/')

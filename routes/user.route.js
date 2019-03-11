@@ -9,12 +9,6 @@ const userDbHandler = require('../db/user.db');
  * `/` should register a new user
  */
 
-function checkAuth(req, res, next) {
-  console.log(req.isAuthenticated());
-  if (req.isAuthenticated()) return next();
-  res.json({ error: 'notLoggedIn', status: res.statusCode });
-}
-
 route.get('/auth/discord', passport.authenticate('discord'));
 
 /**
