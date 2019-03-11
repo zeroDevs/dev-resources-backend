@@ -8,6 +8,7 @@ const homeRoute = require('./routes/index.route');
 const userRoute = require('./routes/user.route');
 const resourceRoute = require('./routes/resource.route');
 const statseRoute = require('./routes/stats.route');
+const profileRoutes = require('./routes/profile.route');
 const contribRoute = require('./routes/contributors.route');
 
 const app = express();
@@ -33,6 +34,7 @@ app.use('/user', userRoute);
 app.use('/resource', resourceRoute);
 app.use('/stats', statseRoute);
 app.use('/contributors', contribRoute);
+app.use('/profile', profileRoutes);
 
 app.listen(port, function() {
   console.log('Our app is running on port:' + port);
