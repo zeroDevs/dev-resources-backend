@@ -11,8 +11,9 @@ const userDbHandler = require('../db/user.db');
  * `/all` - Returns all entries available in database
  */
 route.get('/all', async (req, res) => {
+  let data;
   try {
-    const data = await dbHandler.readAll();
+    data = await dbHandler.readAll();
   } catch (e) {
     return res
       .status(500)
@@ -23,8 +24,9 @@ route.get('/all', async (req, res) => {
 });
 
 route.get('/', async (req, res) => {
+  let data;
   try {
-    const data = await dbHandler.read({
+    data = await dbHandler.read({
       pageNumber: Number.parseInt(req.query.page),
       limit: Number.parseInt(req.query.limit)
     });
@@ -35,6 +37,24 @@ route.get('/', async (req, res) => {
   }
   if (data.error) return res.status(500).json(data);
   res.json(data);
+});
+
+route.get('/stats', async (req, res) => {
+  let result;
+  try {
+    result = await dbHandler.stats();
+    resourceCount = await dbHandler.count();
+    userCount = await userDbHandler.count();
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Something went wrong. Please try again later'
+    });
+  }
+  if (result.error) return res.status(500).json({ result });
+  const response = { ...result };
+  response.payload['resourcesCount'] = resourceCount.payload.count;
+  response.payload['usersCount'] = userCount.payload.count;
+  res.json(result);
 });
 
 /**
