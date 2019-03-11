@@ -1,7 +1,7 @@
 const passport = require('passport');
 const DiscordStrategy = require('passport-discord').Strategy;
-const saveUser = require('./db/user.db');
-const saveTokens = require('./db/userTokens.db');
+const saveUser = require('../db/user.db');
+const saveTokens = require('../db/userTokens.db');
 
 passport.serializeUser(function(user, done) {
   done(null, user);
