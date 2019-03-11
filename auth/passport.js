@@ -3,6 +3,8 @@ const DiscordStrategy = require('passport-discord').Strategy;
 const saveUser = require('../db/user.db');
 const saveTokens = require('../db/userTokens.db');
 
+const scopes = ['identify', 'guilds'];
+
 passport.serializeUser(function(user, done) {
   done(null, user);
 });

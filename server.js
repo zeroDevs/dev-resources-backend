@@ -15,7 +15,6 @@ const port = process.env.PORT || 3001;
 
 app.use(express.json());
 app.use(cors());
-const scopes = ['identify', 'guilds'];
 
 app.use(
   session({
