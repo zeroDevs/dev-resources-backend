@@ -21,7 +21,6 @@ route.get('/all', async (req, res) => {
 });
 
 route.get('/', async (req, res) => {
-  console.log(req.query);
   const data = await dbHandler.read({
     pageNumber: Number.parseInt(req.query.page),
     limit: Number.parseInt(req.query.limit)
