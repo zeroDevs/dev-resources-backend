@@ -245,6 +245,31 @@ resourceHandler.upvote = ({ slug, userId, upvote }) => {
   });
 };
 
+resourceHandler.setTag = ({ slug, tag, userId }) => {
+  return new Promise((resolve, reject) => {
+    const response = new Response();
+    Resource.findOneAndUpdate(
+      {
+        slug
+      },
+      {
+        $addToSet: {
+          tags: tag.toLowerCase() + '-' + userId
+        }
+      },
+      (error, resource) => {
+        if (error) reject(response);
+        response.setSuccess();
+        response.setMessage('Successfully added the tag');
+        response.setPayload({
+          tags: resource.tags
+        });
+        resolve(response);
+      }
+    );
+  });
+};
+
 resourceHandler.downvote = ({ slug, userId }) => {
   return new Promise((resolve, reject) => {
     const response = new Response();
