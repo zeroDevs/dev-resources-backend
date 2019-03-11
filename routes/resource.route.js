@@ -14,20 +14,27 @@ route.get('/all', async (req, res) => {
   try {
     const data = await dbHandler.readAll();
   } catch (e) {
-    console.log(e);
+    return res
+      .status(500)
+      .json({ message: 'Something went wrong. Please try again later' });
   }
   if (data.error) return res.status(500).json(data);
   res.json(data);
 });
 
 route.get('/', async (req, res) => {
-  const data = await dbHandler.read({
-    pageNumber: Number.parseInt(req.query.page),
-    limit: Number.parseInt(req.query.limit)
-  });
+  try {
+    const data = await dbHandler.read({
+      pageNumber: Number.parseInt(req.query.page),
+      limit: Number.parseInt(req.query.limit)
+    });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ message: 'Something went wrong. Please try again later' });
+  }
   if (data.error) return res.status(500).json(data);
   res.json(data);
-  // res.json('test');
 });
 
 /**
