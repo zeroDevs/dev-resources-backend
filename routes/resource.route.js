@@ -39,9 +39,19 @@ route.get('/', async (req, res) => {
   res.json(data);
 });
 
-route.get('/:resourceSlug', (req, res) => {
-  dbHandler.getResource(req.params.resourceSlug)
-  res.send("got it");
+route.get('/:resourceSlug', async (req, res) => {
+  let resource;
+    try {
+      resource = await dbHandler.getResource(req.params.resourceSlug);
+    } catch(e) {
+      return res
+      .status(500)
+      .json({ message: 'Something went wrong. Please try again later' });
+    } 
+
+    if (resource.error) return res.status(500).json(resource);
+    
+    res.json(resource);
 });
 
 /**
