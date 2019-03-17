@@ -38,6 +38,12 @@ route.get('/', async (req, res) => {
   if (data.error) return res.status(500).json(data);
   res.json(data);
 });
+
+route.get('/:resourceSlug', (req, res) => {
+  dbHandler.getResource(req.params.resourceSlug)
+  res.send("got it");
+});
+
 /**
  * `/:user/bookmark` is a POST route which save resources as a bookmark under that specific user.`/:user` should be replaced with user id(or username) on runtime.
  */
