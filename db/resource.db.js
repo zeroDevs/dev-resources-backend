@@ -312,6 +312,17 @@ resourceHandler.downvote = ({ slug, userId }) => {
   });
 };
 
+resourceHandler.comment = ({slug, ...comment}) => {
+  return new Promise((resolve, reject) => {
+    const response = new Response();
+    Resource.findOneAndUpdate(
+      {
+        slug
+      },
+    )
+  })
+};
+
 resourceHandler.count = () => {
   return new Promise((resolve, reject) => {
     const response = new Response();
