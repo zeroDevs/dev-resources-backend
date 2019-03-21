@@ -312,7 +312,7 @@ resourceHandler.downvote = ({ slug, userId }) => {
   });
 };
 
-resourceHandler.comment = ({slug, ...comments}) => {
+resourceHandler.comment = ({slug, ...comment}) => {
   return new Promise((resolve, reject) => {
     const response = new Response();
     Resource.findOneAndUpdate(
@@ -321,7 +321,7 @@ resourceHandler.comment = ({slug, ...comments}) => {
       },
       {
         $push: {
-          comment: comments
+          comments: comment
         }
       },
       error => {

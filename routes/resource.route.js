@@ -80,6 +80,28 @@ route.post('/:resourceSlug/:userId/bookmark', (req, res) => {
     });
 });
 
+route.post('/:resourceSlug/:userId/comment', (req,res) => {
+  dbHandler.comment({
+    slug: req.params.resourceSlug,
+    comment: req.body.comment
+  })
+  .then(response => {
+    res.json({
+      error: false,
+      message: response.message,
+      payload: {
+        comment: response.payload.comment
+      }
+    });
+  })
+  .catch(error => {
+    res.status(500).json({
+      error: true,
+      message: error.message
+    });
+  });
+});
+
 route.post('/:resourceSlug/:userId/upvote', (req, res) => {
   dbHandler
     .upvote({

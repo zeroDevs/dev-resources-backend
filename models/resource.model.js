@@ -50,7 +50,7 @@ const ResourceSchema = new mongoose.Schema({
   comments: [
     {
       commentedBy: {
-        type: string,
+        type: String,
         required: "username is required"
       },
       commentedAt: {
@@ -58,7 +58,7 @@ const ResourceSchema = new mongoose.Schema({
         default:Date.now()
       },
       comment: {
-        type: string,
+        type: String,
         required: "comment is required" 
       }
     }
