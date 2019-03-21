@@ -312,15 +312,26 @@ resourceHandler.downvote = ({ slug, userId }) => {
   });
 };
 
-resourceHandler.comment = ({slug, ...comment}) => {
+resourceHandler.comment = ({slug, ...comments}) => {
   return new Promise((resolve, reject) => {
     const response = new Response();
     Resource.findOneAndUpdate(
       {
         slug
       },
-    )
-  })
+      {
+        $push: {
+          comment: comments
+        }
+      },
+      error => {
+        if (error) reject(response);
+        response.setSuccess();
+        response.setMessage('Comment added');
+        resolve(response);
+      }
+    );
+  });
 };
 
 resourceHandler.count = () => {
