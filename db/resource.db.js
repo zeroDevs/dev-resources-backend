@@ -321,7 +321,7 @@ resourceHandler.comment = ({slug, ...comment}) => {
       },
       {
         $push: {
-          comments: comment
+          comments: {...comment}
         }
       },
       error => {

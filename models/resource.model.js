@@ -51,7 +51,7 @@ const ResourceSchema = new mongoose.Schema({
     {
       commentedBy: {
         type: String,
-        required: "username is required"
+        required: "user is required"
       },
       commentedAt: {
         type:Date,
