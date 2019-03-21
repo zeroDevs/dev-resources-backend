@@ -83,14 +83,14 @@ route.post('/:resourceSlug/:userId/bookmark', (req, res) => {
 route.post('/:resourceSlug/:userId/comment', (req,res) => {
   dbHandler.comment({
     slug: req.params.resourceSlug,
-    comment: req.body.comment
+    comment: req.body
   })
   .then(response => {
     res.json({
       error: false,
       message: response.message,
       payload: {
-        comment: response.payload.comment
+        comment: response.payload
       }
     });
   })

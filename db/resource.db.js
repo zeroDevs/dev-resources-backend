@@ -312,7 +312,7 @@ resourceHandler.downvote = ({ slug, userId }) => {
   });
 };
 
-resourceHandler.comment = ({slug, ...comment}) => {
+resourceHandler.comment = ({slug, comment}) => {
   return new Promise((resolve, reject) => {
     const response = new Response();
     Resource.findOneAndUpdate(
@@ -328,6 +328,7 @@ resourceHandler.comment = ({slug, ...comment}) => {
         if (error) reject(response);
         response.setSuccess();
         response.setMessage('Comment added');
+        response.setPayload(comment)
         resolve(response);
       }
     );
