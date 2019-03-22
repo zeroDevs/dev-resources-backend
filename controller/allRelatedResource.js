@@ -11,7 +11,7 @@ const allRelatedResource = async (currentArticle) => {
     let allTitlesArr = allResources.payload.resources.map(resource =>
         /*get non noise words from all articles in DB and their meta titles*/
         [stopword.removeStopwords(escp(resource.meta.title).toUpperCase().split(/\s+/)), 
-        resource.meta.title]
+        resource.slug]
     );
 
     /*get non noise words from the currently read article*/
@@ -24,7 +24,7 @@ const allRelatedResource = async (currentArticle) => {
             return title;
     })
 
-    /*return the actual title names*/
+    /*returns the slug of the related resources*/
     return relatedFigures.map(title => title[1]);
 }
 
