@@ -5,7 +5,7 @@
 const route = require('express').Router();
 const dbHandler = require('../db/resource.db');
 const userDbHandler = require('../db/user.db');
-//const allRelatedResource = require('../controller/allRelatedResource');
+const allRelatedResource = require('../controller/allRelatedResource');
 
 /**
  * `/all` - Returns all entries available in database
@@ -40,7 +40,7 @@ route.get('/', async (req, res) => {
 });
 
 route.get('/:resourceSlug', async (req, res) => {
-  let resource;
+  let resource, relatedResources;
     try {
       resource = await dbHandler.getResource(req.params.resourceSlug);
     } catch(e) {
@@ -51,7 +51,13 @@ route.get('/:resourceSlug', async (req, res) => {
 
     if (resource.error) return res.status(500).json(resource);
     
-    res.json(resource);
+    try {
+      relatedResources = await allRelatedResource(resource.payload.resource.meta.title)
+    } catch(e) {
+      relatedResources = [];
+    }
+    
+    res.json({resource, relatedResources});
 });
 
 /**
