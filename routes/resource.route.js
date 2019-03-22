@@ -38,6 +38,22 @@ route.get('/', async (req, res) => {
   if (data.error) return res.status(500).json(data);
   res.json(data);
 });
+
+route.get('/:resourceSlug', async (req, res) => {
+  let resource;
+    try {
+      resource = await dbHandler.getResource(req.params.resourceSlug);
+    } catch(e) {
+      return res
+      .status(500)
+      .json({ message: 'Something went wrong. Please try again later' });
+    } 
+
+    if (resource.error) return res.status(500).json(resource);
+    
+    res.json(resource);
+});
+
 /**
  * `/:user/bookmark` is a POST route which save resources as a bookmark under that specific user.`/:user` should be replaced with user id(or username) on runtime.
  */
@@ -62,6 +78,28 @@ route.post('/:resourceSlug/:userId/bookmark', (req, res) => {
         message: error.message
       });
     });
+});
+
+route.post('/:resourceSlug/:userId/comment', (req,res) => {
+  dbHandler.comment({
+    slug: req.params.resourceSlug,
+    comment: req.body
+  })
+  .then(response => {
+    res.json({
+      error: false,
+      message: response.message,
+      payload: {
+        comment: response.payload
+      }
+    });
+  })
+  .catch(error => {
+    res.status(500).json({
+      error: true,
+      message: error.message
+    });
+  });
 });
 
 route.post('/:resourceSlug/:userId/upvote', (req, res) => {

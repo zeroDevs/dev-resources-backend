@@ -47,6 +47,22 @@ const ResourceSchema = new mongoose.Schema({
       type: String
     }
   ],
+  comments: [
+    {
+      commentedBy: {
+        type: String,
+        required: "user is required"
+      },
+      commentedAt: {
+        type:Date,
+        default:Date.now()
+      },
+      comment: {
+        type: String,
+        required: "comment is required" 
+      }
+    }
+  ],
   createdAt: {
     type: Date,
     default: Date.now()

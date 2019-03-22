@@ -102,6 +102,26 @@ resourceHandler.readAll = () => {
   });
 };
 
+resourceHandler.getResource = slug => {
+  return new Promise((resolve, reject) => {
+    const response = new Response();
+    const resourceObj = Resource.findOne({ slug }).exec();
+    resourceObj.then(resource => {
+      if (resource) {
+        response.setSuccess();
+        response.setMessage('Successfully retrieved the resource');
+        response.setPayload({
+          resource
+        });
+        resolve(response);
+      } else {
+        response.setPayload({ resource: 'an error occurred, could not retrieve resource' });
+        reject(response);
+      }
+    });
+  }).catch(error => console.error(error));
+};
+
 resourceHandler.updateLink = ({ oldLink, newLink }) => {
   return new Promise((resolve, reject) => {
     const response = new Response();
@@ -286,6 +306,29 @@ resourceHandler.downvote = ({ slug, userId }) => {
         if (error) reject(response);
         response.setSuccess();
         response.setMessage('Successfully downvoted');
+        resolve(response);
+      }
+    );
+  });
+};
+
+resourceHandler.comment = ({slug, comment}) => {
+  return new Promise((resolve, reject) => {
+    const response = new Response();
+    Resource.findOneAndUpdate(
+      {
+        slug
+      },
+      {
+        $push: {
+          comments: {...comment}
+        }
+      },
+      error => {
+        if (error) reject(response);
+        response.setSuccess();
+        response.setMessage('Comment added');
+        response.setPayload(comment)
         resolve(response);
       }
     );
