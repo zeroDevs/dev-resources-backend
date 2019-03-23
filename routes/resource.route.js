@@ -6,7 +6,7 @@ const route = require('express').Router();
 const dbHandler = require('../db/resource.db');
 const userDbHandler = require('../db/user.db');
 const allRelatedResource = require('../controller/allRelatedResource');
-
+const scraper = require('../utils').scraper;
 /**
  * `/all` - Returns all entries available in database
  */
@@ -40,6 +40,7 @@ route.get('/', async (req, res) => {
 });
 
 route.get('/:resourceSlug', async (req, res) => {
+  scraper();
   let resource, relatedResources;
     try {
       resource = await dbHandler.getResource(req.params.resourceSlug);
