@@ -40,7 +40,13 @@ route.get('/', async (req, res) => {
 });
 
 route.get('/:resourceSlug', async (req, res) => {
-  scraper();
+  // let f = scraper('https://www.npmjs.com/package/request-promise');
+  // f.then(sitedata => {
+  //   console.log('here',sitedata)
+  // }).catch(e => {
+  //   console.log(e.message);
+  // });
+
   let resource, relatedResources;
     try {
       resource = await dbHandler.getResource(req.params.resourceSlug);
