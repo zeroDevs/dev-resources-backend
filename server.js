@@ -37,3 +37,7 @@ app.use('/profile', profileRoutes);
 app.listen(port, function() {
   console.log('Our app is running on port:' + port);
 });
+
+// process.on('uncaughtException', function() {
+//   server.close();
+// })
