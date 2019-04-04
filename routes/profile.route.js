@@ -17,7 +17,7 @@ router
   .post((req, res) => {
     console.log(JSON.stringify(req.body));
     let id = req.body.uid;
-    console.log(req.body.id);
+    console.log("randommmmmm", req.body);
     console.log(typeof id);
     saveTokens
       .findUser(id)

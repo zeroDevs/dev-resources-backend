@@ -38,6 +38,35 @@ UserTokensHandler.create = ({ id, username, accessToken, refreshToken }) => {
 
 }
 
+UserTokensHandler.fuCreate = ({id, username, accessToken, refreshToken}) => {
+    return new Promise((resolve, reject) => {
+    const response = new Response();
+    const date = Date.now;
+    userTokens.findOneAndUpdate(
+      {
+        id: id
+      },
+      {
+        accessToken: accessToken,
+        refreshToken: refreshToken
+      },
+      {
+        upsert: true
+      }
+    )
+      .exec()
+      .then(user => {
+        response.setSuccess();
+        response.setMessage('Successfully updated user tokens');
+        response.setPayload({
+          username: username
+        });
+        resolve(response);
+      })
+      .catch(error => reject(response));
+  });
+}
+
 UserTokensHandler.findUser = (userId) => {
     return new Promise((resolve, reject) => {
         const response = new Response();
