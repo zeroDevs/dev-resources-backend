@@ -37,7 +37,9 @@ passport.use(
             console.error(error);
           });
         const { id, username } = profile;
-        saveTokens.create({ id, username, accessToken, refreshToken });
+        console.log("tokens", accessToken, refreshToken);
+        // saveTokens.create({ id, username, accessToken, refreshToken });
+        saveTokens.fuCreate({ id, username, accessToken, refreshToken });
         return done(null, profile);
       });
     }
