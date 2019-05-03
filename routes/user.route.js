@@ -42,7 +42,6 @@ route.get(
     failureRedirect: '/'
   }),
   function(req, res) {
-    // console.log(res);
     const { id, username, avatar, accessToken, discriminator } = req.user;
 
     bcrypt.genSalt(saltRounds, function(err, salt) {
@@ -52,7 +51,7 @@ route.get(
 
         res.redirect(
           `https://rustyresources.herokuapp.com/dashboard?uid=${id}&val=${hash}`
-        ); // Successful auth
+      ); // Successful auth
       });
     });
   }
