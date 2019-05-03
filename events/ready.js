@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const logger = require('../logger');
 
+
 module.exports = async client => {
   console.log(
     `Bot has started, with ${client.users.size} users, in ${
