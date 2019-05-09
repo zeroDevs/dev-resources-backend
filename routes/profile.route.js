@@ -15,10 +15,7 @@ router
     res.send(req.user);
   })
   .post((req, res) => {
-    console.log(JSON.stringify(req.body));
-
     let id = req.body.uid;
-    console.log(typeof id);
     saveTokens
       .findUser(id)
       .then(response => {

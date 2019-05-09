@@ -38,7 +38,6 @@ passport.use(
           });
         const { id, username } = profile;
         console.log("tokens", accessToken, refreshToken);
-        // saveTokens.create({ id, username, accessToken, refreshToken });
         saveTokens.fuCreate({ id, username, accessToken, refreshToken });
         return done(null, profile);
       });
