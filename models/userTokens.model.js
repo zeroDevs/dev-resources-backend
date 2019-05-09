@@ -19,7 +19,7 @@ const userTokenSchema = new mongoose.Schema({
         type: String,
         required: "refreshToken required"
     },
-    modifiedOn: {
+    createdAt: {
         type: Date,
         default: Date.now
     }

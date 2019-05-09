@@ -5,6 +5,7 @@
   "main": "bot.js",
   "dependencies": {
     "bcrypt": "^3.0.4",
+    "body-parser": "^1.19.0",
     "cheerio": "^1.0.0-rc.2",
     "cors": "^2.8.5",
     "cron": "^1.6.0",

@@ -41,14 +41,15 @@ UserTokensHandler.create = ({ id, username, accessToken, refreshToken }) => {
 UserTokensHandler.fuCreate = ({id, username, accessToken, refreshToken}) => {
     return new Promise((resolve, reject) => {
     const response = new Response();
-    const date = Date.now;
+    const date = new Date();
     userTokens.findOneAndUpdate(
       {
         id: id
       },
       {
         accessToken: accessToken,
-        refreshToken: refreshToken
+        refreshToken: refreshToken,
+        createdAt: date
       },
       {
         upsert: true
@@ -73,11 +74,12 @@ UserTokensHandler.findUser = (userId) => {
         const userObj = userTokens.findOne({ id: userId }).exec()
         userObj.then((user) => {
             console.log(user);
-            if (user.accessToken) {
+            if (user != null) {
                 response.setSuccess();
                 response.setMessage("user found");
                 response.setPayload({
-                    accessToken: user.accessToken
+                    accessToken: user.accessToken,
+                    createdAt: user.createdAt
                 });
                 resolve(response);
             } else {
