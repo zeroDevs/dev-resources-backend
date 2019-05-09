@@ -54,16 +54,16 @@ route.get('/:resourceSlug', async (req, res) => {
       return res
       .status(500)
       .json({ message: 'Something went wrong. Please try again later' });
-    } 
+    }
 
     if (resource.error) return res.status(500).json(resource);
-    
+
     try {
       relatedResources = await allRelatedResource(resource.payload.resource.meta.title)
     } catch(e) {
       relatedResources = [];
     }
-    
+
     res.json({resource, relatedResources});
 });
 
@@ -116,6 +116,8 @@ route.post('/:resourceSlug/:userId/comment', (req,res) => {
 });
 
 route.post('/:resourceSlug/:userId/upvote', (req, res) => {
+    console.log(req.body);
+    console.log(req.params);
   dbHandler
     .upvote({
       slug: req.params.resourceSlug,

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
 const passport = require('./auth/passport');
+const bodyParser = require('body-parser');
 
 const homeRoute = require('./routes/index.route');
 const userRoute = require('./routes/user.route');
@@ -12,6 +13,10 @@ const contribRoute = require('./routes/contributors.route');
 
 const app = express();
 const port = process.env.PORT || 3001;
+
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 
 app.use(express.json());
 app.use(cors());

@@ -3,6 +3,8 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 const saveUser = require('../db/user.db');
 const userDbHandler = require('../db/user.db');
+const saveTokens = require('../db/userTokens.db');
+const request = require('request');
 
 const saltRounds = 10;
 
@@ -42,7 +44,7 @@ route.get(
     failureRedirect: '/'
   }),
   function(req, res) {
-    const { id, username, avatar, accessToken, discriminator } = req.user;
+    const { id, username, avatar, accessToken, discriminator, refreshToken } = req.user;
 
     bcrypt.genSalt(saltRounds, function(err, salt) {
       bcrypt.hash(accessToken, salt, function(err, hash) {
@@ -56,6 +58,33 @@ route.get(
     });
   }
 );
+
+// token check
+route.post('/verify', (req, res) => {
+
+    let id = req.body.uid;
+
+    saveTokens
+      .findUser(id)
+      .then(response => {
+        let act = response.payload.accessToken;
+        bcrypt.compare(act, req.body.hoken, function(err, result) {
+          console.log('check');
+          console.log(result);
+          if (result) {
+              let tDate = new Date();
+              let hours = Math.floor(Math.abs(tDate - response.payload.createdAt) / 36e5);
+              if (hours >= 0 && hours < 24) {
+                  res.json({loggedIn: true});
+              } else {
+                  res.json({loggedIn: false});
+              }
+              console.log(hours);
+          }
+        });
+      })
+      .catch(err => console.log(err.message));
+})
 
 route.get('/logout', (req, res) => {
   req.logout();
