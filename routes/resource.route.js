@@ -116,8 +116,6 @@ route.post('/:resourceSlug/:userId/comment', (req,res) => {
 });
 
 route.post('/:resourceSlug/:userId/upvote', (req, res) => {
-    console.log(req.body);
-    console.log(req.params);
   dbHandler
     .upvote({
       slug: req.params.resourceSlug,

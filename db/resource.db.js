@@ -91,7 +91,10 @@ resourceHandler.readAll = () => {
     Resource.find({})
       .sort({ createdAt: -1 })
       .exec((error, resources) => {
-        if (error) reject(response);
+        if (error) {
+            console.error(error);
+            reject(response);
+        }
         response.setSuccess();
         response.setMessage('Successfully retrieved the resources collection');
         response.setPayload({
@@ -99,7 +102,7 @@ resourceHandler.readAll = () => {
         });
         resolve(response);
       });
-  });
+  }).catch(error => console.error(error));
 };
 
 resourceHandler.getResource = slug => {

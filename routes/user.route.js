@@ -44,7 +44,7 @@ route.get(
     failureRedirect: '/'
   }),
   function(req, res) {
-    const { id, username, avatar, accessToken, discriminator, refreshToken } = req.user;
+    const { id, username, avatar, accessToken, discriminator } = req.user;
 
     bcrypt.genSalt(saltRounds, function(err, salt) {
       bcrypt.hash(accessToken, salt, function(err, hash) {

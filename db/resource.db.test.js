@@ -87,11 +87,9 @@ describe('resourceHandler - readAll()', () => {
             'string'
           );
           done();
-        });
-      })
-      .catch(error => {
-        console.log(error);
       });
+  }).catch(err => console.error(err));
+  done();
   }).timeout(10000);
 });
 
