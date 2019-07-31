@@ -82,7 +82,7 @@ resourceHandler.read = ({ pageNumber, limit }) => {
         });
         resolve(response);
       });
-  });
+  }).catch(error => console.log(error));
 };
 
 resourceHandler.readAll = () => {

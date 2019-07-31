@@ -32,7 +32,7 @@ describe('resourceHandler - create()', () => {
           );
         }
       })
-      .catch(console.log);
+      .catch(done);
   });
 });
 
@@ -47,7 +47,7 @@ describe('resourceHandler - read()', () => {
         assert.equal(response.payload.resources.length, 2);
         done();
       });
-    });
+    }).catch(done);
   }).timeout(10000);
 });
 
@@ -89,7 +89,6 @@ describe('resourceHandler - readAll()', () => {
           done();
       });
   }).catch(err => console.error(err));
-  done();
   }).timeout(10000);
 });
 
