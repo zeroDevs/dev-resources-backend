@@ -52,7 +52,7 @@ route.get(
         saveUser.create({ id, username, avatar, discriminator });
 
         res.redirect(
-          `https://rustyresources.herokuapp.com/dashboard?uid=${id}&val=${hash}`
+          `http://localhost:3000/dashboard?uid=${id}&val=${hash}`
       ); // Successful auth
       });
     });
@@ -84,7 +84,7 @@ route.post('/verify', (req, res) => {
         });
       })
       .catch(err => console.log(err.message));
-})
+});
 
 route.get('/logout', (req, res) => {
   req.logout();

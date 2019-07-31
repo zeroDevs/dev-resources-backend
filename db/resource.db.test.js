@@ -47,7 +47,8 @@ describe('resourceHandler - read()', () => {
         assert.equal(response.payload.resources.length, 2);
         done();
       });
-    });
+    }).catch(err => console.error(err));
+    done();
   }).timeout(10000);
 });
 
